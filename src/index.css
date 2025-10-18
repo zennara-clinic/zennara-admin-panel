@@ -1,0 +1,207 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom scrollbar for product selection */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(243, 244, 246, 0.5);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #a855f7, #9333ea);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #9333ea, #7c3aed);
+}
+
+@layer base {
+  * {
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  html,
+  body {
+    @apply bg-zennara-white font-sans text-gray-900;
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-lg;
+  }
+  
+  .glass-dark {
+    @apply bg-zennara-green/5 backdrop-blur-xl border border-zennara-green/10;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* Beautiful Time Input Styling with Dropdown */
+input[type="time"] {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Style the dropdown indicator (clock icon) */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+  filter: invert(56%) sepia(84%) saturate(458%) hue-rotate(115deg) brightness(94%) contrast(93%);
+  padding: 4px;
+  border-radius: 6px;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+  background-color: rgba(16, 185, 129, 0.1);
+  transform: scale(1.1);
+}
+
+/* Style the time segments */
+input[type="time"]::-webkit-datetime-edit {
+  padding: 2px;
+}
+
+input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
+
+input[type="time"]::-webkit-datetime-edit-text {
+  padding: 0 0.3em;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field,
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  color: #111827;
+  background-color: transparent;
+}
+
+input[type="time"]::-webkit-datetime-edit-hour-field:hover,
+input[type="time"]::-webkit-datetime-edit-minute-field:hover,
+input[type="time"]::-webkit-datetime-edit-ampm-field:hover {
+  background-color: rgba(16, 185, 129, 0.08);
+}
+
+input[type="time"]::-webkit-datetime-edit-hour-field:focus,
+input[type="time"]::-webkit-datetime-edit-minute-field:focus,
+input[type="time"]::-webkit-datetime-edit-ampm-field:focus {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+/* Firefox */
+input[type="time"]::-moz-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+input[type="time"]::-moz-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Beautiful custom checkboxes */
+input[type="checkbox"] {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+  animation: checkboxPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes checkboxPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Beautiful Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #059669;
+}
+
+/* Scale in animation for dropdown */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
