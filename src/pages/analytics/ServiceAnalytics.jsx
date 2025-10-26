@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import {
-  SparklesIcon,
-  TrophyIcon,
-  ChartBarIcon,
-  ExclamationTriangleIcon,
-  ClockIcon,
-  TagIcon,
-  PlusCircleIcon,
-  CheckCircleIcon
-} from '@heroicons/react/24/outline';
+  Sparkles,
+  Trophy,
+  BarChart3,
+  AlertTriangle,
+  Clock,
+  Tag,
+  PlusCircle,
+  CheckCircle
+} from 'lucide-react';
 import { getServiceAnalytics } from '../../services/analyticsService';
 
 export default function ServiceAnalytics() {
@@ -58,7 +58,7 @@ export default function ServiceAnalytics() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
         <div className="bg-white rounded-2xl p-8 max-w-md text-center shadow-sm border border-gray-200">
-          <ExclamationTriangleIcon className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load</h3>
           <p className="text-sm text-gray-500 mb-6">{error}</p>
           <button
@@ -115,7 +115,7 @@ export default function ServiceAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center ring-1 ring-green-100">
-                <SparklesIcon className="w-6 h-6 text-green-600" />
+                <Sparkles className="w-6 h-6 text-green-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Total Revenue</p>
@@ -129,7 +129,7 @@ export default function ServiceAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center ring-1 ring-blue-100">
-                <CheckCircleIcon className="w-6 h-6 text-blue-600" />
+                <CheckCircle className="w-6 h-6 text-blue-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Active Services</p>
@@ -143,7 +143,7 @@ export default function ServiceAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center ring-1 ring-purple-100">
-                <ChartBarIcon className="w-6 h-6 text-purple-600" />
+                <BarChart3 className="w-6 h-6 text-purple-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Avg Revenue/Service</p>
@@ -157,7 +157,7 @@ export default function ServiceAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center ring-1 ring-orange-100">
-                <PlusCircleIcon className="w-6 h-6 text-orange-600" />
+                <PlusCircle className="w-6 h-6 text-orange-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">New Services Added</p>
@@ -174,7 +174,7 @@ export default function ServiceAnalytics() {
           <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="mb-6 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center">
-                <TrophyIcon className="w-6 h-6 text-green-600" />
+                <Trophy className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Top 10 Services by Revenue</h3>
@@ -220,7 +220,7 @@ export default function ServiceAnalytics() {
           <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="mb-6 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
-                <ChartBarIcon className="w-6 h-6 text-blue-600" />
+                <BarChart3 className="w-6 h-6 text-blue-600" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Top 10 Services by Volume</h3>
@@ -331,7 +331,7 @@ export default function ServiceAnalytics() {
           <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="mb-6 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center">
-                <ClockIcon className="w-6 h-6 text-indigo-600" />
+                <Clock className="w-6 h-6 text-indigo-600" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Duration: Scheduled vs Actual</h3>
@@ -377,7 +377,7 @@ export default function ServiceAnalytics() {
           <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="mb-6 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center">
-                <ExclamationTriangleIcon className="w-6 h-6 text-red-600" />
+                <AlertTriangle className="w-6 h-6 text-red-600" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Least Performing Services</h3>
@@ -410,7 +410,7 @@ export default function ServiceAnalytics() {
           <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="mb-6 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center">
-                <TagIcon className="w-6 h-6 text-emerald-600" />
+                <Tag className="w-6 h-6 text-emerald-600" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">Package Utilization Rate</h3>
@@ -454,7 +454,7 @@ export default function ServiceAnalytics() {
           <div className="bg-white rounded-2xl p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="mb-6 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center">
-                <PlusCircleIcon className="w-6 h-6 text-orange-600" />
+                <PlusCircle className="w-6 h-6 text-orange-600" />
               </div>
               <div>
                 <h3 className="text-xl font-bold text-gray-900">New Services Added This Month</h3>
