@@ -120,6 +120,22 @@ const navigationItems = [
     title: 'Analytics',
     icon: ChartIcon,
     path: '/analytics',
+    submenu: [
+      { title: 'Financial & Revenue', path: '/analytics/financial' },
+      { title: 'Patient & Customer', path: '/analytics/patients' },
+      { title: 'Appointment & Booking', path: '/analytics/appointments' },
+      { title: 'Services', path: '/analytics/services' },
+      { title: 'Inventory & Product', path: '/analytics/inventory' },
+      { title: 'Orders & Sales', path: '/analytics/orders' },
+      { title: 'Package & Membership', path: '/analytics/packages' },
+      { title: 'Payment & Invoicing', path: '/analytics/payments' },
+      { title: 'App & Digital Engagement', path: '/analytics/engagement' },
+      { title: 'Comparison & Trend', path: '/analytics/trends' },
+      { title: 'Goals & Targets', path: '/analytics/goals' },
+      { title: 'Location-Based Insights', path: '/analytics/locations' },
+      { title: 'Performance Rankings', path: '/analytics/rankings' },
+      { title: 'Quick Stats Summary', path: '/analytics/summary' },
+    ],
   },
 ];
 

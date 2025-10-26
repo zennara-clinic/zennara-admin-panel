@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   UsersIcon,
   CalendarIcon,
@@ -17,8 +18,52 @@ import {
   StarIcon,
   LocationIcon
 } from './Icons';
+import {
+  getFinancialAnalytics,
+  getMonthlyRevenueTrend,
+  getDailyTargetProgress
+} from '../services/analyticsService';
+import FinancialMetricsCards from './FinancialMetricsCards';
+import MonthlyRevenueChart from './charts/MonthlyRevenueChart';
+import RevenueByCategoryChart from './charts/RevenueByCategoryChart';
+import RevenueByLocationChart from './charts/RevenueByLocationChart';
+import PaymentMethodChart from './charts/PaymentMethodChart';
 
 export default function Dashboard() {
+  // Financial Analytics State
+  const [financialData, setFinancialData] = useState(null);
+  const [monthlyRevenue, setMonthlyRevenue] = useState([]);
+  const [dailyTarget, setDailyTarget] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch Financial Analytics
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        // Fetch all analytics data
+        const [financial, monthly, target] = await Promise.all([
+          getFinancialAnalytics(),
+          getMonthlyRevenueTrend(),
+          getDailyTargetProgress()
+        ]);
+
+        setFinancialData(financial.data);
+        setMonthlyRevenue(monthly.data);
+        setDailyTarget(target.data);
+      } catch (err) {
+        console.error('Error fetching analytics:', err);
+        setError('Failed to load financial analytics');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAnalytics();
+  }, []);
   const todayMetrics = [
     {
       title: 'Total Appointments',
@@ -187,9 +232,143 @@ export default function Dashboard() {
         <p className="text-gray-500 text-base">Welcome back, Dr. Admin. Here's your clinic overview.</p>
       </div>
 
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-zennara-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-500 font-semibold">Loading financial analytics...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-50 border-2 border-red-200 rounded-3xl p-8 text-center">
+          <ExclamationIcon className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <h3 className="text-xl font-bold text-red-900 mb-2">Failed to Load Analytics</h3>
+          <p className="text-red-700 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      {/* Financial Analytics Section */}
+      {!loading && !error && financialData && (
+        <>
+          {/* Financial Metrics Cards */}
+          <div className="mb-10">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-3xl font-extrabold text-gray-900">Financial Overview</h2>
+                <p className="text-gray-500 mt-1">Comprehensive revenue analytics and metrics</p>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="px-4 py-2 bg-white rounded-xl border border-gray-200 font-semibold text-gray-600">
+                  Last 30 Days
+                </div>
+              </div>
+            </div>
+            <FinancialMetricsCards data={financialData} />
+          </div>
+
+          {/* Daily Target Progress */}
+          {dailyTarget && (
+            <div className="mb-10">
+              <div className="bg-gradient-to-br from-white via-blue-50 to-purple-50 rounded-3xl p-8 border-2 border-gray-100 shadow-xl">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="text-2xl font-extrabold text-gray-900">Daily Collection Target</h3>
+                    <p className="text-gray-600 mt-1">Track your daily revenue goal progress</p>
+                  </div>
+                  <div className={`px-6 py-3 rounded-2xl font-bold text-lg ${
+                    dailyTarget.achieved
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-orange-100 text-orange-700'
+                  }`}>
+                    {dailyTarget.achieved ? '🎯 Target Achieved!' : '⏱️ In Progress'}
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="bg-white rounded-2xl p-6 shadow-sm">
+                    <div className="text-sm font-bold text-gray-500 mb-2">Today's Collection</div>
+                    <div className="text-4xl font-extrabold text-zennara-green">
+                      ₹{dailyTarget.todayCollection.toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-sm">
+                    <div className="text-sm font-bold text-gray-500 mb-2">Daily Target</div>
+                    <div className="text-4xl font-extrabold text-gray-900">
+                      ₹{dailyTarget.dailyTarget.toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-2xl p-6 shadow-sm">
+                    <div className="text-sm font-bold text-gray-500 mb-2">Difference</div>
+                    <div className={`text-4xl font-extrabold ${
+                      dailyTarget.difference >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
+                      {dailyTarget.difference >= 0 ? '+' : ''}₹{Math.abs(dailyTarget.difference).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-bold text-gray-600">Progress</span>
+                    <span className="text-lg font-extrabold text-zennara-green">
+                      {dailyTarget.progressPercentage.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="h-6 bg-gray-200 rounded-full overflow-hidden shadow-inner">
+                    <div
+                      className="h-full bg-gradient-to-r from-zennara-green via-emerald-500 to-teal-500 transition-all duration-1000 ease-out flex items-center justify-end pr-4"
+                      style={{ width: `${Math.min(dailyTarget.progressPercentage, 100)}%` }}
+                    >
+                      {dailyTarget.progressPercentage > 10 && (
+                        <span className="text-white text-xs font-bold">₹{dailyTarget.todayCollection.toLocaleString()}</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Monthly Revenue Trend Chart */}
+          <div className="mb-10">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+              <MonthlyRevenueChart data={monthlyRevenue} />
+            </div>
+          </div>
+
+          {/* Revenue Breakdown Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+            {/* Revenue by Category */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+              <RevenueByCategoryChart data={financialData.revenueByCategory} />
+            </div>
+
+            {/* Revenue by Location */}
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+              <RevenueByLocationChart data={financialData.revenueByLocation} />
+            </div>
+          </div>
+
+          {/* Payment Method Distribution */}
+          <div className="mb-10">
+            <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+              <PaymentMethodChart data={financialData.paymentMethodDistribution} />
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Today's Metrics - 8 Cards */}
       <div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Today's Metrics</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Today's Operational Metrics</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {todayMetrics.map((stat, index) => {
           const IconComponent = stat.icon;

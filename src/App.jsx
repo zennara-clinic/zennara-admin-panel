@@ -55,6 +55,11 @@ import Vendors from './pages/Vendors';
 import InventoryManagement from './pages/InventoryManagement';
 import AddInventory from './pages/AddInventory';
 import EditInventory from './pages/EditInventory';
+import FinancialRevenue from './pages/analytics/FinancialRevenue';
+import PatientCustomerAnalytics from './pages/analytics/PatientCustomerAnalytics';
+import AppointmentAnalytics from './pages/analytics/AppointmentAnalytics';
+import ServiceAnalytics from './pages/analytics/ServiceAnalytics';
+import InventoryAnalytics from './pages/analytics/InventoryAnalytics';
 
 function App() {
   return (
@@ -123,6 +128,20 @@ function App() {
                     <Route path="/communications" element={<ComingSoon />} />
                     <Route path="/reviews" element={<ComingSoon />} />
                     <Route path="/analytics" element={<ComingSoon />} />
+                    <Route path="/analytics/financial" element={<FinancialRevenue />} />
+                    <Route path="/analytics/patients" element={<PatientCustomerAnalytics />} />
+                    <Route path="/analytics/appointments" element={<AppointmentAnalytics />} />
+                    <Route path="/analytics/services" element={<ServiceAnalytics />} />
+                    <Route path="/analytics/inventory" element={<InventoryAnalytics />} />
+                    <Route path="/analytics/orders" element={<ComingSoon />} />
+                    <Route path="/analytics/packages" element={<ComingSoon />} />
+                    <Route path="/analytics/payments" element={<ComingSoon />} />
+                    <Route path="/analytics/engagement" element={<ComingSoon />} />
+                    <Route path="/analytics/trends" element={<ComingSoon />} />
+                    <Route path="/analytics/goals" element={<ComingSoon />} />
+                    <Route path="/analytics/locations" element={<ComingSoon />} />
+                    <Route path="/analytics/rankings" element={<ComingSoon />} />
+                    <Route path="/analytics/summary" element={<ComingSoon />} />
                     <Route path="/locations" element={<Locations />} />
                     <Route path="/locations/branches" element={<Locations />} />
                   </Routes>
