@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import {
-  CalendarDaysIcon,
-  ChartBarIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
-  CheckCircleIcon,
-  XCircleIcon,
-  UserGroupIcon
-} from '@heroicons/react/24/outline';
+  Calendar,
+  BarChart3,
+  Clock,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Users
+} from 'lucide-react';
 import { getAppointmentAnalytics } from '../../services/analyticsService';
 
 export default function AppointmentAnalytics() {
@@ -57,7 +57,7 @@ export default function AppointmentAnalytics() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
         <div className="bg-white rounded-2xl p-8 max-w-md text-center shadow-sm border border-gray-200">
-          <ExclamationTriangleIcon className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load</h3>
           <p className="text-sm text-gray-500 mb-6">{error}</p>
           <button
@@ -110,7 +110,7 @@ export default function AppointmentAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center ring-1 ring-green-100">
-                <CheckCircleIcon className="w-6 h-6 text-green-600" />
+                <CheckCircle className="w-6 h-6 text-green-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Conversion Rate</p>
@@ -124,7 +124,7 @@ export default function AppointmentAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center ring-1 ring-red-100">
-                <XCircleIcon className="w-6 h-6 text-red-600" />
+                <XCircle className="w-6 h-6 text-red-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Cancellation Rate</p>
@@ -138,7 +138,7 @@ export default function AppointmentAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center ring-1 ring-orange-100">
-                <ExclamationTriangleIcon className="w-6 h-6 text-orange-600" />
+                <AlertTriangle className="w-6 h-6 text-orange-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">No-Show Rate</p>
@@ -152,7 +152,7 @@ export default function AppointmentAnalytics() {
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl hover:border-gray-300 transition-all duration-300">
             <div className="flex items-start justify-between mb-5">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center ring-1 ring-blue-100">
-                <ClockIcon className="w-6 h-6 text-blue-600" />
+                <Clock className="w-6 h-6 text-blue-600" />
               </div>
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Pending Confirmations</p>
@@ -178,7 +178,7 @@ export default function AppointmentAnalytics() {
                   <p className="text-sm font-semibold text-gray-700 mb-1">Per Day</p>
                   <p className="text-3xl font-bold text-blue-600">{averages.perDay}</p>
                 </div>
-                <CalendarDaysIcon className="w-10 h-10 text-blue-500" />
+                <Calendar className="w-10 h-10 text-blue-500" />
               </div>
 
               <div className="flex items-center justify-between p-5 bg-purple-50 rounded-xl ring-1 ring-purple-100">
@@ -186,7 +186,7 @@ export default function AppointmentAnalytics() {
                   <p className="text-sm font-semibold text-gray-700 mb-1">Per Week</p>
                   <p className="text-3xl font-bold text-purple-600">{averages.perWeek}</p>
                 </div>
-                <CalendarDaysIcon className="w-10 h-10 text-purple-500" />
+                <Calendar className="w-10 h-10 text-purple-500" />
               </div>
 
               <div className="flex items-center justify-between p-5 bg-green-50 rounded-xl ring-1 ring-green-100">
@@ -194,7 +194,7 @@ export default function AppointmentAnalytics() {
                   <p className="text-sm font-semibold text-gray-700 mb-1">Per Month</p>
                   <p className="text-3xl font-bold text-green-600">{averages.perMonth}</p>
                 </div>
-                <CalendarDaysIcon className="w-10 h-10 text-green-500" />
+                <Calendar className="w-10 h-10 text-green-500" />
               </div>
             </div>
           </div>
@@ -210,7 +210,7 @@ export default function AppointmentAnalytics() {
               {/* Peak Hour */}
               <div className="p-6 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl ring-1 ring-orange-100">
                 <div className="flex items-center gap-3 mb-3">
-                  <ClockIcon className="w-8 h-8 text-orange-600" />
+                  <Clock className="w-8 h-8 text-orange-600" />
                   <div>
                     <p className="text-sm font-semibold text-gray-700">Peak Booking Hour</p>
                     <p className="text-2xl font-bold text-orange-600">{peakHour.hour}</p>
@@ -222,7 +222,7 @@ export default function AppointmentAnalytics() {
               {/* Busiest Day */}
               <div className="p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl ring-1 ring-indigo-100">
                 <div className="flex items-center gap-3 mb-3">
-                  <CalendarDaysIcon className="w-8 h-8 text-indigo-600" />
+                  <Calendar className="w-8 h-8 text-indigo-600" />
                   <div>
                     <p className="text-sm font-semibold text-gray-700">Busiest Day</p>
                     <p className="text-2xl font-bold text-indigo-600">{busiestDay.day}</p>
@@ -234,7 +234,7 @@ export default function AppointmentAnalytics() {
               {/* Avg Time Between Bookings */}
               <div className="p-6 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl ring-1 ring-emerald-100">
                 <div className="flex items-center gap-3 mb-3">
-                  <UserGroupIcon className="w-8 h-8 text-emerald-600" />
+                  <Users className="w-8 h-8 text-emerald-600" />
                   <div>
                     <p className="text-sm font-semibold text-gray-700">Avg Time Between Visits</p>
                     <p className="text-2xl font-bold text-emerald-600">{avgTimeBetweenBookings} days</p>
