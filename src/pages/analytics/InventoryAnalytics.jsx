@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import {
-  ExclamationTriangleIcon,
-  XCircleIcon,
-  FireIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
-  CalendarIcon,
-  ArrowPathIcon,
-  TruckIcon,
-  ChartBarIcon,
-  ArrowTrendingUpIcon
-} from '@heroicons/react/24/outline';
+  AlertTriangle,
+  XCircle,
+  Flame,
+  Clock,
+  IndianRupee,
+  Calendar,
+  RotateCw,
+  Truck,
+  BarChart3,
+  TrendingUp
+} from 'lucide-react';
 import { getInventoryAnalytics } from '../../services/analyticsService';
 
 export default function InventoryAnalytics() {
@@ -51,7 +51,7 @@ export default function InventoryAnalytics() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
         <div className="bg-white rounded-2xl p-8 max-w-md text-center shadow-sm border border-gray-200">
-          <ExclamationTriangleIcon className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load</h3>
           <p className="text-sm text-gray-500 mb-6">{error}</p>
           <button onClick={fetchAnalytics} className="px-6 py-2.5 bg-zennara-green text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors">
@@ -79,7 +79,7 @@ export default function InventoryAnalytics() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center ring-1 ring-green-100 mb-5">
-              <CurrencyDollarIcon className="w-6 h-6 text-green-600" />
+              <IndianRupee className="w-6 h-6 text-green-600" />
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Total Inventory Value</p>
             <p className="text-4xl font-bold text-gray-900 mb-2">₹{summary.totalValue.toLocaleString()}</p>
@@ -88,7 +88,7 @@ export default function InventoryAnalytics() {
           
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center ring-1 ring-orange-100 mb-5">
-              <ExclamationTriangleIcon className="w-6 h-6 text-orange-600" />
+              <AlertTriangle className="w-6 h-6 text-orange-600" />
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Low Stock Alerts</p>
             <p className="text-4xl font-bold text-gray-900 mb-2">{summary.lowStockCount}</p>
@@ -97,7 +97,7 @@ export default function InventoryAnalytics() {
 
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center ring-1 ring-red-100 mb-5">
-              <XCircleIcon className="w-6 h-6 text-red-600" />
+              <XCircle className="w-6 h-6 text-red-600" />
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Out of Stock</p>
             <p className="text-4xl font-bold text-gray-900 mb-2">{summary.outOfStockCount}</p>
@@ -106,7 +106,7 @@ export default function InventoryAnalytics() {
 
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center ring-1 ring-blue-100 mb-5">
-              <ArrowPathIcon className="w-6 h-6 text-blue-600" />
+              <RotateCw className="w-6 h-6 text-blue-600" />
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Reorder Needed</p>
             <p className="text-4xl font-bold text-gray-900 mb-2">{summary.reorderNeededCount}</p>
@@ -115,7 +115,7 @@ export default function InventoryAnalytics() {
 
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 flex items-center justify-center ring-1 ring-purple-100 mb-5">
-              <CalendarIcon className="w-6 h-6 text-purple-600" />
+              <Calendar className="w-6 h-6 text-purple-600" />
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Expiring in 30 Days</p>
             <p className="text-4xl font-bold text-gray-900 mb-2">{summary.expiringIn30Days}</p>
@@ -124,7 +124,7 @@ export default function InventoryAnalytics() {
 
           <div className="group bg-white rounded-2xl p-7 border border-gray-200 hover:shadow-xl transition-all duration-300">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 flex items-center justify-center ring-1 ring-indigo-100 mb-5">
-              <ArrowTrendingUpIcon className="w-6 h-6 text-indigo-600" />
+              <TrendingUp className="w-6 h-6 text-indigo-600" />
             </div>
             <p className="text-sm font-semibold text-gray-500 mb-2">Turnover Ratio</p>
             <p className="text-4xl font-bold text-gray-900 mb-2">{inventoryTurnoverRatio}x</p>
