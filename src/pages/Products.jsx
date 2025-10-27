@@ -214,103 +214,127 @@ export default function Products() {
       {stats && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Total Products */}
-          <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center justify-between">
+          <div className="group relative bg-gradient-to-br from-white via-gray-50/50 to-white backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl hover:scale-105 hover:border-gray-200 transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-400/5 to-gray-600/10 rounded-full blur-2xl"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Products</p>
-                <p className="text-4xl font-black text-gray-900 mb-1">{stats.total}</p>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
+                <p className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">Total Products</p>
+                <p className="text-5xl font-black bg-gradient-to-br from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">{stats.total}</p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500">
                   <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
                   <span>All items</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-gray-500 to-gray-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <Package className="w-8 h-8 text-white" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-500 to-gray-600 rounded-2xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-gray-500 to-gray-600 p-5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <Package className="w-9 h-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Active */}
-          <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center justify-between">
+          <div className="group relative bg-gradient-to-br from-emerald-50 via-white to-emerald-50/30 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-emerald-100 hover:shadow-2xl hover:scale-105 hover:border-emerald-200 transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/10 to-emerald-600/20 rounded-full blur-2xl"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Active</p>
-                <p className="text-4xl font-black text-emerald-600 mb-1">{stats.active}</p>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                <p className="text-xs font-bold text-emerald-600/70 mb-3 uppercase tracking-wider">Active Products</p>
+                <p className="text-5xl font-black bg-gradient-to-br from-emerald-600 to-emerald-500 bg-clip-text text-transparent mb-2">{stats.active}</p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-lg shadow-emerald-500/50"></div>
                   <span>Available now</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <CheckCircle className="w-8 h-8 text-white" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <CheckCircle className="w-9 h-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Inactive */}
-          <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center justify-between">
+          <div className="group relative bg-gradient-to-br from-gray-50 via-white to-gray-50/30 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-gray-200 hover:shadow-2xl hover:scale-105 hover:border-gray-300 transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gray-400/5 to-gray-500/10 rounded-full blur-2xl"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Inactive</p>
-                <p className="text-4xl font-black text-gray-600 mb-1">{stats.inactive}</p>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
+                <p className="text-xs font-bold text-gray-400 mb-3 uppercase tracking-wider">Inactive</p>
+                <p className="text-5xl font-black bg-gradient-to-br from-gray-600 to-gray-500 bg-clip-text text-transparent mb-2">{stats.inactive}</p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-500">
                   <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
                   <span>Hidden items</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-gray-400 to-gray-500 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <XCircle className="w-8 h-8 text-white" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-400 to-gray-500 rounded-2xl blur-xl opacity-40 group-hover:opacity-60 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-gray-400 to-gray-500 p-5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <XCircle className="w-9 h-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Low Stock */}
-          <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center justify-between">
+          <div className="group relative bg-gradient-to-br from-amber-50 via-white to-amber-50/30 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-amber-100 hover:shadow-2xl hover:scale-105 hover:border-amber-200 transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-amber-400/10 to-amber-600/20 rounded-full blur-2xl"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Low Stock</p>
-                <p className="text-4xl font-black text-amber-600 mb-1">{stats.lowStock}</p>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></div>
+                <p className="text-xs font-bold text-amber-600/70 mb-3 uppercase tracking-wider">Low Stock</p>
+                <p className="text-5xl font-black bg-gradient-to-br from-amber-600 to-amber-500 bg-clip-text text-transparent mb-2">{stats.lowStock}</p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-600">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full animate-pulse shadow-lg shadow-amber-500/50"></div>
                   <span>Need attention</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-amber-500 to-amber-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <AlertTriangle className="w-8 h-8 text-white" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-amber-500 to-amber-600 p-5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <AlertTriangle className="w-9 h-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Out of Stock */}
-          <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center justify-between">
+          <div className="group relative bg-gradient-to-br from-red-50 via-white to-red-50/30 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-red-100 hover:shadow-2xl hover:scale-105 hover:border-red-200 transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-red-400/10 to-red-600/20 rounded-full blur-2xl"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Out of Stock</p>
-                <p className="text-4xl font-black text-red-600 mb-1">{stats.outOfStock}</p>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
+                <p className="text-xs font-bold text-red-600/70 mb-3 uppercase tracking-wider">Out of Stock</p>
+                <p className="text-5xl font-black bg-gradient-to-br from-red-600 to-red-500 bg-clip-text text-transparent mb-2">{stats.outOfStock}</p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-red-600">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                   <span>Not available</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-red-500 to-red-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <XCircle className="w-8 h-8 text-white" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-red-500 to-red-600 p-5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <XCircle className="w-9 h-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Total Value */}
-          <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex items-center justify-between">
+          <div className="group relative bg-gradient-to-br from-blue-50 via-white to-blue-50/30 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-blue-100 hover:shadow-2xl hover:scale-105 hover:border-blue-200 transition-all duration-300 overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/10 to-blue-600/20 rounded-full blur-2xl"></div>
+            <div className="relative flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Total Value</p>
-                <p className="text-4xl font-black text-blue-600 mb-1">₹{(stats.totalValue / 10000000).toFixed(1)}Cr</p>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
+                <p className="text-xs font-bold text-blue-600/70 mb-3 uppercase tracking-wider">Total Value</p>
+                <p className="text-5xl font-black bg-gradient-to-br from-blue-600 to-blue-500 bg-clip-text text-transparent mb-2">₹{(stats.totalValue / 10000000).toFixed(1)}Cr</p>
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-600">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <span>Inventory value</span>
                 </div>
               </div>
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <IndianRupee className="w-8 h-8 text-white" />
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
+                <div className="relative bg-gradient-to-br from-blue-500 to-blue-600 p-5 rounded-2xl shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <IndianRupee className="w-9 h-9 text-white" />
+                </div>
               </div>
             </div>
           </div>
@@ -536,6 +560,7 @@ export default function Products() {
           </button>
         </div>
       ) : (
+        <>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {paginatedProducts.map((product) => {
               const stockStatus = getStockStatus(product.stock);
@@ -693,7 +718,6 @@ export default function Products() {
               );
             })}
           </div>
-        )}
 
         {/* Pagination */}
         {filteredProducts.length > 0 && totalPages > 1 && (
@@ -773,6 +797,8 @@ export default function Products() {
             </div>
           </div>
         )}
+        </>
+      )}
       </div>
   );
 }
