@@ -261,8 +261,8 @@ export default function EditProduct() {
         image: ''
       }));
       
-      setSuccess('Image removed and product updated successfully');
-      setTimeout(() => setSuccess(null), 2000);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 2000);
     } catch (error) {
       console.error('Error deleting image:', error);
       console.error('Error response:', error.response?.data);
@@ -276,8 +276,8 @@ export default function EditProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.description || !formData.OrgName || !formData.price || !formData.image) {
-      setError('Please fill in all required fields');
+    if (!formData.name || !formData.description || !formData.OrgName || !formData.price) {
+      setError('Please fill in all required fields (name, description, organization, price)');
       setTimeout(() => setError(null), 3000);
       return;
     }
@@ -472,7 +472,7 @@ export default function EditProduct() {
                 {imagePreview || formData.image ? (
                   <>
                     <img
-                      src={imagePreview || formData.image}
+                      src={imagePreview || formData.image || 'https://res.cloudinary.com/dimlozhrx/image/upload/v1761587818/Upload_Product_Image_f3jvxi.png'}
                       alt="Preview"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
@@ -828,7 +828,7 @@ export default function EditProduct() {
               <button
                 type="submit"
                 form="product-form"
-                disabled={saving || uploading || deleting || !formData.image}
+                disabled={saving || uploading || deleting}
                 className="px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white text-sm font-bold rounded-2xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
               >
                 {saving ? (

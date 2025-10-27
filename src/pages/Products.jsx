@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Package, CheckCircle, XCircle, AlertTriangle, X as XIcon, IndianRupee, Search, Edit2, Eye, EyeOff, Trash2, Plus } from 'lucide-react';
+import { Package, CheckCircle, XCircle, AlertTriangle, X as XIcon, IndianRupee, Search, Edit2, Eye, EyeOff, Trash2, Plus, ChevronDown, Check, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
 
 const API_URL = `${API_BASE_URL}/api`;
@@ -18,6 +18,11 @@ export default function Products() {
   const [showAllFormulations, setShowAllFormulations] = useState(false);
   const [formulations, setFormulations] = useState(['All']);
   const [stockFilter, setStockFilter] = useState('all'); // all, in-stock, low-stock, out-of-stock
+  const [showFormulationDropdown, setShowFormulationDropdown] = useState(false);
+  const [formulationSearch, setFormulationSearch] = useState('');
+  const dropdownRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(20);
 
   useEffect(() => {
     fetchProducts();
@@ -88,6 +93,19 @@ export default function Products() {
     }
   };
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowFormulationDropdown(false);
+        setFormulationSearch('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleToggleStatus = async (productId) => {
     try {
       const token = localStorage.getItem('adminToken');
@@ -131,6 +149,17 @@ export default function Products() {
     return true;
   });
 
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedFormulation, searchQuery, showInactive, stockFilter]);
+
   if (loading && !products.length) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50/30 to-cyan-50/20 flex items-center justify-center">
@@ -145,32 +174,45 @@ export default function Products() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50/30 to-cyan-50/20 p-4 md:p-8">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <Package className="w-6 h-6 text-white" />
+      <div className="relative mb-8 bg-gradient-to-r from-white/80 via-white/60 to-white/40 backdrop-blur-xl rounded-3xl p-8 shadow-xl border border-white/40 overflow-hidden">
+        {/* Decorative Elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-emerald-400/10 to-teal-400/10 rounded-full blur-3xl -z-10"></div>
+        <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-gradient-to-br from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl -z-10"></div>
+        
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-teal-400 rounded-2xl blur-lg opacity-60"></div>
+              <div className="relative w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Package className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-4xl font-black bg-gradient-to-r from-gray-900 via-gray-800 to-emerald-900 bg-clip-text text-transparent mb-1">
+                Products
+              </h1>
+              <p className="text-gray-600 font-semibold text-sm flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                Manage your product catalog
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              Products
-            </h1>
-            <p className="text-gray-600 font-medium">Manage your product catalog</p>
-          </div>
+          <button
+            onClick={() => navigate('/products/add')}
+            className="group relative flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:via-teal-600 hover:to-emerald-700 text-white rounded-2xl font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 active:scale-95 transition-all duration-300 overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 transform -skew-x-12 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+            <div className="relative w-6 h-6 bg-white/20 rounded-xl flex items-center justify-center group-hover:bg-white/30 group-hover:rotate-90 transition-all duration-300">
+              <Plus className="w-4 h-4" />
+            </div>
+            <span className="relative">Add New Product</span>
+          </button>
         </div>
-        <button
-          onClick={() => navigate('/products/add')}
-          className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white rounded-2xl font-bold shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
-        >
-          <div className="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center group-hover:bg-white/30 transition-all duration-300">
-            <Plus className="w-3 h-3" />
-          </div>
-          <span>Add New Product</span>
-        </button>
       </div>
 
       {/* Stats */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Total Products */}
           <div className="group bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/20 hover:shadow-2xl hover:scale-105 transition-all duration-300">
             <div className="flex items-center justify-between">
@@ -261,7 +303,7 @@ export default function Products() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-gray-500 mb-2 uppercase tracking-wider">Total Value</p>
-                <p className="text-4xl font-black text-blue-600 mb-1">₹{(stats.totalValue / 100000).toFixed(1)}L</p>
+                <p className="text-4xl font-black text-blue-600 mb-1">₹{(stats.totalValue / 10000000).toFixed(1)}Cr</p>
                 <div className="flex items-center gap-1 text-xs text-gray-600">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                   <span>Inventory value</span>
@@ -276,109 +318,119 @@ export default function Products() {
       )}
 
       {/* Filters */}
-      <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-white/20 mb-6">
-        {/* Search Bar */}
+      <div className="relative z-10 bg-white/70 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-white/20 mb-6">
+        {/* Search Bar and Category Filter in Single Row */}
         <div className="mb-5">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search products by name, brand, or category..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-5 py-3 bg-white/80 border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-sm text-gray-900 placeholder-gray-400 font-medium shadow-sm"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-lg transition-all duration-200"
-              >
-                <XIcon className="w-3.5 h-3.5 text-gray-400" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Formulation Filters */}
-        <div className="mb-5">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider">Filter by Category</h3>
-            {selectedFormulation !== 'All' && (
-              <button
-                onClick={() => setSelectedFormulation('All')}
-                className="text-xs font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
-              >
-                Clear Filter
-              </button>
-            )}
-          </div>
-            
-            {/* Desktop: Scrollable horizontal list */}
-            <div className="hidden md:block">
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400 scrollbar-thumb-rounded-full" style={{
-                scrollbarWidth: 'thin',
-                scrollbarColor: '#d1d5db transparent'
-              }}>
-                {formulations.map((formulation) => (
-                  <button
-                    key={formulation}
-                    onClick={() => setSelectedFormulation(formulation)}
-                    className={`group relative px-4 py-2 text-xs font-semibold rounded-lg whitespace-nowrap transition-all duration-200 ${
-                      selectedFormulation === formulation
-                        ? 'bg-emerald-600 text-white shadow-md scale-105'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:scale-105 active:scale-95'
-                    }`}
-                  >
-                    {formulation}
-                    {selectedFormulation === formulation && (
-                      <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-white rounded-full shadow-sm"></div>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile: Grid with Show More */}
-            <div className="md:hidden">
-              <div className="grid grid-cols-2 gap-2">
-                {formulations.slice(0, showAllFormulations ? formulations.length : 6).map((formulation) => (
-                  <button
-                    key={formulation}
-                    onClick={() => setSelectedFormulation(formulation)}
-                    className={`px-3 py-2 text-xs font-semibold rounded-lg transition-all duration-200 ${
-                      selectedFormulation === formulation
-                        ? 'bg-emerald-600 text-white shadow-md'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 active:scale-95'
-                    }`}
-                  >
-                    {formulation}
-                  </button>
-                ))}
-              </div>
-              {formulations.length > 6 && (
+          <div className="flex items-center gap-3">
+            {/* Search Bar */}
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search products by name, brand, or category..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-5 py-3 bg-white/80 border border-gray-200/50 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-sm text-gray-900 placeholder-gray-400 font-medium shadow-sm"
+              />
+              {searchQuery && (
                 <button
-                  onClick={() => setShowAllFormulations(!showAllFormulations)}
-                  className="w-full mt-2 px-3 py-2 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1.5 hover:bg-gray-100 rounded-lg transition-all duration-200"
                 >
-                  {showAllFormulations ? (
-                    <>
-                      Show Less
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                      </svg>
-                    </>
-                  ) : (
-                    <>
-                      Show More ({formulations.length - 6} more)
-                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </>
-                  )}
+                  <XIcon className="w-3.5 h-3.5 text-gray-400" />
                 </button>
               )}
             </div>
+
+            {/* Category Filter Dropdown */}
+            <div className="w-80 relative" ref={dropdownRef}>
+            <button
+              onClick={() => setShowFormulationDropdown(!showFormulationDropdown)}
+              className="w-full px-4 py-3 bg-white/80 border border-gray-200/50 rounded-xl text-left font-semibold text-sm text-gray-900 hover:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 flex items-center justify-between shadow-sm"
+            >
+              <span className="flex items-center gap-2">
+                {selectedFormulation === 'All' ? (
+                  <span className="text-gray-500">Select Category...</span>
+                ) : (
+                  <>
+                    <span className="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                    {selectedFormulation}
+                  </>
+                )}
+              </span>
+              <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-200 ${showFormulationDropdown ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {showFormulationDropdown && (
+              <div className="absolute z-[9999] w-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-200/50 overflow-hidden">
+                {/* Search Input */}
+                <div className="p-3 border-b border-gray-100">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Search categories..."
+                      value={formulationSearch}
+                      onChange={(e) => setFormulationSearch(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  </div>
+                </div>
+
+                {/* Options List */}
+                <div className="max-h-64 overflow-y-auto">
+                  {formulations
+                    .filter(formulation => 
+                      formulation.toLowerCase().includes(formulationSearch.toLowerCase())
+                    )
+                    .map((formulation) => (
+                      <button
+                        key={formulation}
+                        onClick={() => {
+                          setSelectedFormulation(formulation);
+                          setShowFormulationDropdown(false);
+                          setFormulationSearch('');
+                        }}
+                        className={`w-full px-4 py-3 text-left text-sm font-semibold transition-all duration-200 flex items-center justify-between ${
+                          selectedFormulation === formulation
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span className="flex items-center gap-3">
+                          {selectedFormulation === formulation && (
+                            <Check className="w-4 h-4 text-emerald-600" />
+                          )}
+                          <span className={selectedFormulation === formulation ? '' : 'ml-7'}>
+                            {formulation}
+                          </span>
+                        </span>
+                        {selectedFormulation === formulation && (
+                          <span className="px-2 py-0.5 bg-emerald-600 text-white text-[10px] font-bold rounded-full">
+                            Active
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  
+                  {/* No Results */}
+                  {formulations.filter(f => f.toLowerCase().includes(formulationSearch.toLowerCase())).length === 0 && (
+                    <div className="px-4 py-8 text-center">
+                      <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <Search className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <p className="text-sm font-semibold text-gray-900 mb-1">No categories found</p>
+                      <p className="text-xs text-gray-500">Try a different search term</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            </div>
           </div>
+        </div>
 
         {/* Stock Status Filters */}
         <div className="mb-4">
@@ -466,7 +518,7 @@ export default function Products() {
       </div>
 
       {/* Products Grid */}
-      {filteredProducts.length === 0 ? (
+      {paginatedProducts.length === 0 ? (
         <div className="bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 p-16 text-center shadow-lg">
           <div className="w-24 h-24 bg-gradient-to-br from-emerald-100 to-emerald-200 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl">
             <Package className="w-12 h-12 text-emerald-600" />
@@ -485,7 +537,7 @@ export default function Products() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => {
+            {paginatedProducts.map((product) => {
               const stockStatus = getStockStatus(product.stock);
               return (
                 <div
@@ -495,7 +547,7 @@ export default function Products() {
                   {/* Image Container */}
                   <div className="relative aspect-square bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
                     <img
-                      src={product.image}
+                      src={product.image || 'https://res.cloudinary.com/dimlozhrx/image/upload/v1761587818/Upload_Product_Image_f3jvxi.png'}
                       alt={product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
@@ -587,6 +639,19 @@ export default function Products() {
                       </div>
                     </div>
 
+                    {/* View Details Button */}
+                    <div className="mb-3">
+                      <a
+                        href={`/products/edit/${product._id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white text-xs font-bold rounded-2xl transition-all duration-300 active:scale-95 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        Edit in New Tab
+                      </a>
+                    </div>
+
                     {/* Actions */}
                     <div className="flex gap-2">
                       <button
@@ -627,6 +692,85 @@ export default function Products() {
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Pagination */}
+        {filteredProducts.length > 0 && totalPages > 1 && (
+          <div className="mt-8 bg-white/70 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-white/20">
+            <div className="flex items-center justify-between">
+              {/* Showing info */}
+              <div className="text-sm text-gray-600 font-semibold">
+                Showing <span className="text-gray-900">{startIndex + 1}</span> to{' '}
+                <span className="text-gray-900">{Math.min(endIndex, filteredProducts.length)}</span> of{' '}
+                <span className="text-gray-900">{filteredProducts.length}</span> products
+              </div>
+
+              {/* Pagination controls */}
+              <div className="flex items-center gap-2">
+                {/* Previous button */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
+                    currentPage === 1
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 shadow-sm hover:shadow-md'
+                  }`}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Previous
+                </button>
+
+                {/* Page numbers */}
+                <div className="flex items-center gap-1">
+                  {[...Array(totalPages)].map((_, index) => {
+                    const pageNumber = index + 1;
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      pageNumber === 1 ||
+                      pageNumber === totalPages ||
+                      (pageNumber >= currentPage - 1 && pageNumber <= currentPage + 1)
+                    ) {
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() => setCurrentPage(pageNumber)}
+                          className={`w-10 h-10 rounded-xl font-bold text-sm transition-all duration-300 ${
+                            currentPage === pageNumber
+                              ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg scale-110'
+                              : 'bg-white text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 shadow-sm hover:shadow-md'
+                          }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    } else if (pageNumber === currentPage - 2 || pageNumber === currentPage + 2) {
+                      return (
+                        <span key={pageNumber} className="px-2 text-gray-400 font-bold">
+                          ...
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
+                </div>
+
+                {/* Next button */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center gap-2 ${
+                    currentPage === totalPages
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-gray-700 hover:bg-emerald-50 hover:text-emerald-600 shadow-sm hover:shadow-md'
+                  }`}
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
