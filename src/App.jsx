@@ -60,6 +60,7 @@ import PatientCustomerAnalytics from './pages/analytics/PatientCustomerAnalytics
 import AppointmentAnalytics from './pages/analytics/AppointmentAnalytics';
 import ServiceAnalytics from './pages/analytics/ServiceAnalytics';
 import InventoryAnalytics from './pages/analytics/InventoryAnalytics';
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
@@ -144,6 +145,7 @@ function App() {
                     <Route path="/analytics/summary" element={<ComingSoon />} />
                     <Route path="/locations" element={<Locations />} />
                     <Route path="/locations/branches" element={<Locations />} />
+                    <Route path="/notifications" element={<Notifications />} />
                   </Routes>
                   </main>
                 </div>

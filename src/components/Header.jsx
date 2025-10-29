@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDownIcon, UserCircleIcon, SettingsIcon, LogoutIcon, BellIcon, CheckCircleIcon, XIcon, CalendarIcon, CurrencyIcon, UsersIcon, PackageIcon } from './Icons';
 import adminAuthService from '../services/adminAuth';
+import notificationService from '../services/notificationService';
 import Avatar from './Avatar';
 
 export default function Header() {
@@ -10,34 +11,78 @@ export default function Header() {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const adminData = adminAuthService.getAdminData();
 
-  const [notifications, setNotifications] = useState([
-    { id: 1, title: 'New Appointment Booked', message: 'John Doe has booked an appointment for tomorrow at 10:00 AM', time: '5 mins ago', unread: true, type: 'appointment' },
-    { id: 2, title: 'Payment Received', message: 'Payment of ₹2,500 received from Sarah Johnson', time: '1 hour ago', unread: true, type: 'payment' },
-    { id: 3, title: 'New Patient Registration', message: 'Michael Smith completed registration and medical form', time: '3 hours ago', unread: false, type: 'patient' },
-    { id: 4, title: 'Inventory Alert', message: 'Low stock alert: Face Serum - Only 5 units remaining', time: '5 hours ago', unread: true, type: 'inventory' }
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
-
-  const markAsRead = (id) => {
-    setNotifications(notifications.map(notif => notif.id === id ? { ...notif, unread: false } : notif));
+  // Fetch recent notifications
+  const fetchNotifications = async () => {
+    try {
+      setLoading(true);
+      const response = await notificationService.getRecentNotifications(3);
+      if (response.success) {
+        setNotifications(response.data.notifications);
+        setUnreadCount(response.data.unreadCount);
+      }
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const markAllAsRead = () => {
-    setNotifications(notifications.map(notif => ({ ...notif, unread: false })));
+  // Fetch notifications on component mount and when notification panel opens
+  useEffect(() => {
+    fetchNotifications();
+    // Poll for new notifications every 30 seconds
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Fetch when notification panel opens
+  useEffect(() => {
+    if (isNotificationOpen) {
+      fetchNotifications();
+    }
+  }, [isNotificationOpen]);
+
+  const markAsRead = async (id) => {
+    try {
+      await notificationService.markAsRead(id);
+      // Update local state
+      setNotifications(notifications.map(notif => 
+        notif._id === id ? { ...notif, isRead: true } : notif
+      ));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error);
+    }
+  };
+
+  const markAllAsRead = async () => {
+    try {
+      await notificationService.markAllAsRead();
+      // Update local state
+      setNotifications(notifications.map(notif => ({ ...notif, isRead: true })));
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark all as read:', error);
+    }
   };
 
   const getNotificationIcon = (type) => {
     const iconProps = { className: "w-5 h-5" };
     switch(type) {
-      case 'appointment': 
+      case 'booking': 
         return { icon: CalendarIcon, color: 'bg-blue-100 text-blue-600' };
-      case 'payment': 
+      case 'order': 
         return { icon: CurrencyIcon, color: 'bg-green-100 text-green-600' };
-      case 'patient': 
+      case 'consultation': 
         return { icon: UsersIcon, color: 'bg-purple-100 text-purple-600' };
-      case 'inventory': 
+      case 'product': 
         return { icon: PackageIcon, color: 'bg-orange-100 text-orange-600' };
+      case 'inventory': 
+        return { icon: PackageIcon, color: 'bg-red-100 text-red-600' };
       default: 
         return { icon: BellIcon, color: 'bg-gray-100 text-gray-600' };
     }
@@ -126,40 +171,53 @@ export default function Header() {
 
                 {/* Notifications List */}
                 <div className="max-h-[400px] overflow-y-auto">
-                  {notifications.map((notification) => {
-                    const { icon: IconComponent, color } = getNotificationIcon(notification.type);
-                    return (
-                      <div
-                        key={notification.id}
-                        onClick={() => markAsRead(notification.id)}
-                        className={`px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
-                          notification.unread ? 'bg-blue-50/50' : ''
-                        }`}
-                      >
-                        <div className="flex gap-3">
-                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
-                            <IconComponent className="w-5 h-5" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between gap-2 mb-1">
-                              <h4 className={`text-sm font-semibold text-gray-900 ${
-                                notification.unread ? 'font-bold' : ''
-                              }`}>
-                                {notification.title}
-                              </h4>
-                              {notification.unread && (
-                                <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></span>
-                              )}
+                  {loading ? (
+                    <div className="px-5 py-8 text-center text-gray-500">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-zennara-green mx-auto"></div>
+                      <p className="mt-2 text-sm">Loading notifications...</p>
+                    </div>
+                  ) : notifications.length === 0 ? (
+                    <div className="px-5 py-8 text-center text-gray-500">
+                      <BellIcon className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                      <p className="text-sm">No notifications yet</p>
+                    </div>
+                  ) : (
+                    notifications.map((notification) => {
+                      const { icon: IconComponent, color } = getNotificationIcon(notification.type);
+                      const timeAgo = notificationService.formatTimeAgo(notification.createdAt);
+                      return (
+                        <div
+                          key={notification._id}
+                          onClick={() => markAsRead(notification._id)}
+                          className={`px-5 py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors cursor-pointer ${
+                            !notification.isRead ? 'bg-blue-50/50' : ''
+                          }`}
+                        >
+                          <div className="flex gap-3">
+                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${color}`}>
+                              <IconComponent className="w-5 h-5" />
                             </div>
-                            <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                              {notification.message}
-                            </p>
-                            <p className="text-xs text-gray-400">{notification.time}</p>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2 mb-1">
+                                <h4 className={`text-sm font-semibold text-gray-900 ${
+                                  !notification.isRead ? 'font-bold' : ''
+                                }`}>
+                                  {notification.title}
+                                </h4>
+                                {!notification.isRead && (
+                                  <span className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1"></span>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-gray-400">{timeAgo}</p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
 
                 {/* Footer - View All */}
@@ -167,7 +225,7 @@ export default function Header() {
                   <button
                     onClick={() => {
                       setIsNotificationOpen(false);
-                      // Navigate to notifications page
+                      navigate('/notifications');
                     }}
                     className="w-full py-2.5 bg-zennara-green hover:bg-emerald-600 text-white font-semibold text-sm rounded-xl transition-colors"
                   >
