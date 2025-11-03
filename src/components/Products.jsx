@@ -11,6 +11,7 @@ import {
   CheckCircleIcon
 } from './Icons';
 import { products, productCategories, productStats, getLowStockProducts } from '../data/productsData';
+import { designTokens } from '../design-system/tokens';
 
 export default function Products() {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ export default function Products() {
           </button>
           <button
             onClick={() => navigate('/products/add')}
-            className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-zennara-green to-emerald-600 text-white rounded-2xl font-bold hover:shadow-lg transition-all"
+            className={`flex items-center space-x-2 px-6 py-3 ${designTokens.gradients.components.primary} text-white rounded-2xl font-bold hover:shadow-lg transition-all`}
           >
             <PlusIcon className="w-5 h-5" />
             <span>Add Product</span>

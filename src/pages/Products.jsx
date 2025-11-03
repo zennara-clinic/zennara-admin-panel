@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { Package, CheckCircle, XCircle, AlertTriangle, X as XIcon, IndianRupee, Search, Edit2, Eye, EyeOff, Trash2, Plus, ChevronDown, Check, ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { API_BASE_URL } from '../config/api';
+import { designTokens } from '../design-system/tokens';
 
 const API_URL = `${API_BASE_URL}/api`;
 
@@ -342,7 +343,7 @@ export default function Products() {
       )}
 
       {/* Filters */}
-      <div className="relative z-10 bg-white/70 backdrop-blur-xl rounded-2xl p-5 shadow-lg border border-white/20 mb-6">
+      <div className={`relative z-10 ${designTokens.glass.light} rounded-2xl p-5 shadow-lg mb-6`}>
         {/* Search Bar and Category Filter in Single Row */}
         <div className="mb-5">
           <div className="flex items-center gap-3">

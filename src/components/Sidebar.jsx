@@ -1,35 +1,30 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  DashboardIcon,
-  CalendarIcon,
-  UsersIcon,
-  HeartIcon,
-  DoctorIcon,
-  PackageIcon,
-  ClockIcon,
-  LocationIcon,
-  CurrencyIcon,
-  MailIcon,
-  StarIcon,
-  ChartIcon,
-  SettingsIcon,
-  ChevronDownIcon,
-  ArrowRightIcon,
-  UploadIcon,
-  OrdersIcon,
-  InventoryIcon
-} from './Icons';
+  LayoutDashboard,
+  Calendar,
+  Users,
+  Heart,
+  Package,
+  MapPin,
+  Mail,
+  Star,
+  BarChart3,
+  ChevronDown,
+  ArrowRight,
+  Upload,
+  ClipboardList
+} from 'lucide-react';
 
 const navigationItems = [
   {
     title: 'Dashboard',
-    icon: DashboardIcon,
+    icon: LayoutDashboard,
     path: '/',
   },
   {
     title: 'Bookings',
-    icon: CalendarIcon,
+    icon: Calendar,
     path: '/bookings',
     submenu: [
       { title: 'All Bookings', path: '/bookings' },
@@ -39,7 +34,7 @@ const navigationItems = [
   },
   {
     title: 'Patients',
-    icon: UsersIcon,
+    icon: Users,
     path: '/patients',
     submenu: [
       { title: 'All Patients', path: '/patients/all' },
@@ -49,7 +44,7 @@ const navigationItems = [
   },
   {
     title: 'Consultations',
-    icon: HeartIcon,
+    icon: Heart,
     path: '/consultations',
     submenu: [
       { title: 'Services List', path: '/consultations/services' },
@@ -60,7 +55,7 @@ const navigationItems = [
   },
   {
     title: 'Media',
-    icon: UploadIcon,
+    icon: Upload,
     path: '/media',
     submenu: [
       { title: 'Uploads', path: '/media/uploads' },
@@ -68,7 +63,7 @@ const navigationItems = [
   },
   {
     title: 'Products',
-    icon: PackageIcon,
+    icon: Package,
     path: '/products',
         submenu: [
       { title: 'All Products', path: '/products' },
@@ -79,7 +74,7 @@ const navigationItems = [
   },
   {
     title: 'Orders',
-    icon: OrdersIcon,
+    icon: ClipboardList,
     path: '/orders',
     submenu: [
       { title: 'All Orders', path: '/orders' },
@@ -91,7 +86,7 @@ const navigationItems = [
   },
   {
     title: 'Inventory',
-    icon: InventoryIcon,
+    icon: Package,
     path: '/inventory',
     submenu: [
       { title: 'All Inventory', path: '/inventory' },
@@ -100,7 +95,7 @@ const navigationItems = [
   },
   {
     title: 'Locations',
-    icon: LocationIcon,
+    icon: MapPin,
     path: '/locations',
     submenu: [
       { title: 'Clinic Branches', path: '/locations/branches' },
@@ -108,17 +103,17 @@ const navigationItems = [
   },
   {
     title: 'Communications',
-    icon: MailIcon,
+    icon: Mail,
     path: '/communications',
   },
   {
     title: 'Reviews',
-    icon: StarIcon,
+    icon: Star,
     path: '/reviews',
   },
   {
     title: 'Analytics',
-    icon: ChartIcon,
+    icon: BarChart3,
     path: '/analytics',
     submenu: [
       { title: 'Financial & Revenue', path: '/analytics/financial' },
@@ -167,13 +162,14 @@ function NavItem({ item }) {
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
             isActive ? 'bg-white/20' : 'bg-gray-100 group-hover:bg-white'
           }`}>
-            <IconComponent className={`w-4 h-4 ${isActive ? 'text-white' : 'text-gray-600 group-hover:text-zennara-green'}`} />
+            <IconComponent size={16} className={`${isActive ? 'text-white' : 'text-gray-600 group-hover:text-zennara-green'}`} />
           </div>
           <span className="font-semibold text-sm">{item.title}</span>
         </div>
         {item.submenu && (
-          <ChevronDownIcon
-            className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-white' : 'text-gray-400'}`}
+          <ChevronDown
+            size={16}
+            className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''} ${isActive ? 'text-white' : 'text-gray-400'}`}
           />
         )}
       </Link>
@@ -192,7 +188,7 @@ function NavItem({ item }) {
                   {idx + 1}
                 </div>
                 <span className="flex-1 text-xs">{subitem.title}</span>
-                <ArrowRightIcon className="w-3 h-3 opacity-0 group-hover/sub:opacity-100 transition-opacity" />
+                <ArrowRight size={12} className="opacity-0 group-hover/sub:opacity-100 transition-opacity" />
               </Link>
             ))}
           </div>

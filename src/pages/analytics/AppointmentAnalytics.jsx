@@ -87,9 +87,12 @@ export default function AppointmentAnalytics() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">📅 Appointment & Booking Insights</h1>
-              <p className="text-base text-gray-600">Comprehensive appointment analytics and trends</p>
+            <div className="flex items-center gap-3">
+              <Calendar size={32} className="text-emerald-600" />
+              <div>
+                <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">Appointment & Booking Insights</h1>
+                <p className="text-base text-gray-600">Comprehensive appointment analytics and trends</p>
+              </div>
             </div>
             
             <select

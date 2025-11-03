@@ -325,12 +325,12 @@ export default function Bookings() {
                 className="w-full pl-8 pr-10 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-zennara-green focus:border-zennara-green outline-none transition-all text-sm font-semibold text-gray-700 appearance-none cursor-pointer shadow-sm hover:border-gray-300"
               >
                 <option value="all">All Status</option>
-                <option value="Confirmed">✓ Confirmed</option>
-                <option value="Rescheduled">↻ Rescheduled</option>
-                <option value="In Progress">⏳ In Progress</option>
-                <option value="Completed">✔ Completed</option>
-                <option value="Cancelled">✕ Cancelled</option>
-                <option value="No Show">⚠ No Show</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Rescheduled">Rescheduled</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="No Show">No Show</option>
               </select>
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                 <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

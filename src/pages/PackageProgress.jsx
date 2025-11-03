@@ -17,6 +17,17 @@ function PackageProgress() {
   const [prescriptionFile, setPrescriptionFile] = useState(null);
   const [prescriptionPreview, setPrescriptionPreview] = useState('');
   const [uploadingPrescription, setUploadingPrescription] = useState(false);
+  const [showServiceCardModal, setShowServiceCardModal] = useState(false);
+  const [serviceCardData, setServiceCardData] = useState({
+    doctor: '',
+    therapist: '',
+    manager: '',
+    grading: 5,
+    notes: ''
+  });
+  const [savingServiceCard, setSavingServiceCard] = useState(false);
+  const [consentStatus, setConsentStatus] = useState({});
+  const [showConsentWarningModal, setShowConsentWarningModal] = useState(false);
 
   useEffect(() => {
     fetchAssignmentDetails();
@@ -40,6 +51,18 @@ function PackageProgress() {
         prescriptions: assignmentData.completedServices?.find(cs => cs.serviceId === service.serviceId)?.prescriptions || []
       }));
       
+      // Check consent status for each service
+      const consents = {};
+      if (assignmentData.serviceConsents) {
+        assignmentData.packageDetails.services.forEach(service => {
+          const hasConsent = assignmentData.serviceConsents.has ? 
+            assignmentData.serviceConsents.has(service.serviceId) :
+            Object.keys(assignmentData.serviceConsents).includes(service.serviceId);
+          consents[service.serviceId] = hasConsent;
+        });
+      }
+      setConsentStatus(consents);
+      
       setServices(servicesWithStatus);
       setLoading(false);
     } catch (error) {
@@ -48,20 +71,89 @@ function PackageProgress() {
     }
   };
 
-  const handleCompleteService = async (service) => {
+  const handleCompleteService = (service) => {
     console.log('Complete Service clicked for:', service);
-    console.log('Service ID:', service.serviceId || service._id);
-    console.log('Assignment user ID:', assignment.userId);
+    
+    // Check if user has submitted consent for this service
+    const serviceId = service.serviceId || service._id;
+    const hasConsent = consentStatus[serviceId];
+    
+    if (!hasConsent) {
+      setSelectedService(service);
+      setShowConsentWarningModal(true);
+      return;
+    }
     
     setSelectedService(service);
+    // Reset service card data
+    setServiceCardData({
+      doctor: '',
+      therapist: '',
+      manager: '',
+      grading: 5,
+      notes: ''
+    });
+    setShowServiceCardModal(true);
+  };
+
+  const handleSaveServiceCard = async () => {
+    // Validate required fields
+    if (!serviceCardData.doctor.trim()) {
+      alert('Doctor name is required');
+      return;
+    }
+    if (!serviceCardData.manager.trim()) {
+      alert('Manager name is required');
+      return;
+    }
+    if (serviceCardData.grading < 0 || serviceCardData.grading > 10) {
+      alert('Grading must be between 0 and 10');
+      return;
+    }
+
+    setSavingServiceCard(true);
+
+    try {
+      const token = localStorage.getItem('adminToken');
+      const serviceCardPayload = {
+        assignmentId: id,
+        serviceId: selectedService.serviceId || selectedService._id,
+        doctor: serviceCardData.doctor.trim(),
+        therapist: serviceCardData.therapist.trim() || undefined,
+        manager: serviceCardData.manager.trim(),
+        grading: Number(serviceCardData.grading),
+        notes: serviceCardData.notes.trim() || undefined
+      };
+
+      console.log('Saving service card:', serviceCardPayload);
+
+      await axios.post(
+        `${API_BASE_URL}/api/package-assignments/service-card`,
+        serviceCardPayload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      console.log('Service card saved successfully');
+      
+      // Close service card modal and send OTP
+      setShowServiceCardModal(false);
+      await handleSendOtp();
+    } catch (error) {
+      console.error('Error saving service card:', error);
+      alert(error.response?.data?.message || 'Failed to save service card');
+    } finally {
+      setSavingServiceCard(false);
+    }
+  };
+
+  const handleSendOtp = async () => {
     setShowOtpModal(true);
     
-    // Send OTP to user's email
     try {
       const token = localStorage.getItem('adminToken');
       const otpPayload = {
         assignmentId: id,
-        serviceId: service.serviceId || service._id,
+        serviceId: selectedService.serviceId || selectedService._id,
         userId: assignment.userId
       };
       
@@ -76,7 +168,15 @@ function PackageProgress() {
       console.log('OTP sent successfully:', response.data);
     } catch (error) {
       console.error('Error sending OTP:', error);
-      console.error('Error details:', error.response?.data || error.message);
+      const errorData = error.response?.data;
+      
+      if (errorData?.requiresConsent) {
+        setShowOtpModal(false);
+        setShowConsentWarningModal(true);
+      } else {
+        alert(errorData?.message || 'Failed to send OTP');
+        setShowOtpModal(false);
+      }
     }
   };
 
@@ -129,6 +229,8 @@ function PackageProgress() {
     } catch (error) {
       console.error('Error verifying OTP:', error);
       console.error('Error details:', error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || 'Failed to verify OTP. Please try again.';
+      alert(errorMessage);
     } finally {
       setOtpLoading(false);
     }
@@ -320,7 +422,26 @@ function PackageProgress() {
 
                     {/* Service Info */}
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{service.serviceName}</h3>
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="text-lg font-semibold text-gray-900">{service.serviceName}</h3>
+                        {!service.completed && (
+                          consentStatus[service.serviceId] ? (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                              <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                              Consent Submitted
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 border border-orange-200">
+                              <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                              </svg>
+                              Consent Required
+                            </span>
+                          )
+                        )}
+                      </div>
                       {service.completed && service.completedAt && (
                         <p className="text-sm text-gray-500 flex items-center">
                           <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -403,6 +524,188 @@ function PackageProgress() {
           ))}
         </div>
       </div>
+
+      {/* Service Card Modal - Apple Design */}
+      {showServiceCardModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-lg w-full" 
+               style={{ 
+                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+               }}>
+            
+            {/* Content */}
+            <div>
+              {/* Header with Icon */}
+              <div className="bg-gradient-to-b from-white to-white/95 backdrop-blur-xl px-6 pt-6 pb-4 border-b border-gray-100 rounded-t-3xl">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-11 h-11 bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-[18px] flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900 tracking-tight">Service Card</h3>
+                      <p className="text-xs text-gray-500 font-medium">Complete service details</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="px-6 py-5 space-y-5">
+                {/* Client Info Card */}
+                <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/50 to-emerald-50/80 rounded-[20px] p-4 border border-emerald-100/50 shadow-sm">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider font-semibold text-emerald-700 mb-1">Client</p>
+                      <p className="font-semibold text-sm text-gray-900 truncate">{assignment.userDetails.fullName || assignment.userDetails.name}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] uppercase tracking-wider font-semibold text-emerald-700 mb-1">ID</p>
+                      <p className="font-semibold text-sm text-gray-900">{assignment.userDetails.patientId || 'N/A'}</p>
+                    </div>
+                    <div className="col-span-2">
+                      <p className="text-[10px] uppercase tracking-wider font-semibold text-emerald-700 mb-1">Service</p>
+                      <p className="font-semibold text-sm text-gray-900 leading-tight">{selectedService?.serviceName}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Form Fields */}
+                <div className="space-y-4">
+                  {/* Doctor */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5 tracking-wide">
+                      DOCTOR <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={serviceCardData.doctor}
+                      onChange={(e) => setServiceCardData({...serviceCardData, doctor: e.target.value})}
+                      placeholder="e.g., Dr. Spoorthy"
+                      className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none transition-all shadow-sm placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  {/* Therapist */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5 tracking-wide">
+                      THERAPIST <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={serviceCardData.therapist}
+                      onChange={(e) => setServiceCardData({...serviceCardData, therapist: e.target.value})}
+                      placeholder="Enter therapist name"
+                      className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none transition-all shadow-sm placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  {/* Manager */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5 tracking-wide">
+                      MANAGER <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={serviceCardData.manager}
+                      onChange={(e) => setServiceCardData({...serviceCardData, manager: e.target.value})}
+                      placeholder="e.g., Irans"
+                      className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none transition-all shadow-sm placeholder:text-gray-400"
+                    />
+                  </div>
+
+                  {/* Grading - Apple Style */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-2 tracking-wide">
+                      RELIEF GRADING <span className="text-red-500">*</span>
+                    </label>
+                    <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-[20px] p-4 border border-gray-200">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-medium text-gray-600">No Relief</span>
+                        <div className="px-4 py-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl shadow-lg shadow-emerald-500/30">
+                          <span className="text-2xl font-bold text-white tabular-nums">{serviceCardData.grading}</span>
+                        </div>
+                        <span className="text-xs font-medium text-gray-600">Complete</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        value={serviceCardData.grading}
+                        onChange={(e) => setServiceCardData({...serviceCardData, grading: e.target.value})}
+                        className="w-full h-2 bg-gradient-to-r from-gray-300 via-emerald-400 to-emerald-600 rounded-full appearance-none cursor-pointer accent-emerald-600 slider-thumb"
+                        style={{
+                          background: `linear-gradient(to right, #10b981 0%, #10b981 ${serviceCardData.grading * 10}%, #e5e7eb ${serviceCardData.grading * 10}%, #e5e7eb 100%)`
+                        }}
+                      />
+                      <div className="flex justify-between mt-2 px-1">
+                        {[0, 2, 4, 6, 8, 10].map(num => (
+                          <span key={num} className={`text-[10px] font-semibold ${Number(serviceCardData.grading) === num ? 'text-emerald-600' : 'text-gray-400'}`}>
+                            {num}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5 tracking-wide">
+                      NOTES <span className="text-xs text-gray-400 font-normal">(Optional)</span>
+                    </label>
+                    <textarea
+                      value={serviceCardData.notes}
+                      onChange={(e) => setServiceCardData({...serviceCardData, notes: e.target.value})}
+                      placeholder="Add any additional notes..."
+                      rows="2"
+                      className="w-full px-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500 outline-none transition-all resize-none shadow-sm placeholder:text-gray-400"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="bg-gradient-to-t from-white via-white to-white/95 backdrop-blur-xl px-6 py-4 border-t border-gray-100 rounded-b-3xl">
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowServiceCardModal(false);
+                      setServiceCardData({
+                        doctor: '',
+                        therapist: '',
+                        manager: '',
+                        grading: 5,
+                        notes: ''
+                      });
+                    }}
+                    disabled={savingServiceCard}
+                    className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-xl hover:bg-gray-200 active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveServiceCard}
+                    disabled={savingServiceCard}
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-sm font-semibold rounded-xl hover:from-emerald-600 hover:to-teal-700 active:scale-95 transition-all disabled:opacity-50 shadow-lg shadow-emerald-500/30"
+                  >
+                    {savingServiceCard ? (
+                      <span className="flex items-center justify-center space-x-2">
+                        <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span>Saving...</span>
+                      </span>
+                    ) : 'Save & Send OTP'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* OTP Verification Modal */}
       {showOtpModal && (
@@ -518,6 +821,75 @@ function PackageProgress() {
                 className="flex-1 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {uploadingPrescription ? 'Uploading...' : 'Upload'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Consent Warning Modal */}
+      {showConsentWarningModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+            {/* Header with Warning Icon */}
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-5">
+              <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                  <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Patient Consent Required</h3>
+                </div>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="px-6 py-5">
+              <p className="text-gray-700 mb-4 leading-relaxed">
+                The patient must complete the consent form on their mobile app before this service can be marked complete.
+              </p>
+
+              <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg mb-4">
+                <p className="text-sm font-semibold text-blue-900 mb-2">Please ask the patient to:</p>
+                <ol className="space-y-2 text-sm text-blue-800">
+                  <li className="flex items-start">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-bold mr-2 flex-shrink-0 mt-0.5">1</span>
+                    <span>Open Zennara mobile app</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-bold mr-2 flex-shrink-0 mt-0.5">2</span>
+                    <span>Go to <strong>Forms → Package Service Consent</strong></span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-bold mr-2 flex-shrink-0 mt-0.5">3</span>
+                    <span>Select this package</span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-500 text-white text-xs font-bold mr-2 flex-shrink-0 mt-0.5">4</span>
+                    <span>Fill consent for this service</span>
+                  </li>
+                </ol>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <div className="flex items-center text-sm text-gray-600">
+                  <svg className="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Once consent is submitted, you can proceed with service completion.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+              <button
+                onClick={() => setShowConsentWarningModal(false)}
+                className="w-full px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg"
+              >
+                OK, I Understand
               </button>
             </div>
           </div>

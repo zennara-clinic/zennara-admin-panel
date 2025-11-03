@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { API_BASE_URL } from '../config/api';
+import { designTokens } from '../design-system/tokens';
 
 const API_URL = `${API_BASE_URL}/api`;
 
@@ -121,7 +122,7 @@ export default function Vendors() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 p-8">
+    <div className={`min-h-screen ${designTokens.gradients.backgrounds.neutral} p-8`}>
       {/* Animated Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 right-20 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
@@ -137,8 +138,8 @@ export default function Vendors() {
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
-          <div className="group relative bg-white/80 backdrop-blur-2xl rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105 border border-purple-100">
-            <div className="absolute top-6 right-6 w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+          <div className={`group relative ${designTokens.glass.medium} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105`}>
+            <div className={`absolute top-6 right-6 w-16 h-16 ${designTokens.gradients.icons.purple} rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform`}>
               <Users className="text-white" size={32} />
             </div>
             <p className="text-gray-600 text-sm font-medium uppercase">Total Vendors</p>
@@ -146,8 +147,8 @@ export default function Vendors() {
             <p className="text-sm text-purple-600 font-medium">All registered</p>
           </div>
 
-          <div className="group relative bg-white/80 backdrop-blur-2xl rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105 border border-green-100">
-            <div className="absolute top-6 right-6 w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+          <div className={`group relative ${designTokens.glass.medium} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105`}>
+            <div className={`absolute top-6 right-6 w-16 h-16 ${designTokens.gradients.icons.green} rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform`}>
               <CheckCircle className="text-white" size={32} />
             </div>
             <p className="text-gray-600 text-sm font-medium uppercase">Active Vendors</p>
@@ -155,8 +156,8 @@ export default function Vendors() {
             <p className="text-sm text-green-600 font-medium">Currently active</p>
           </div>
 
-          <div className="group relative bg-white/80 backdrop-blur-2xl rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105 border border-red-100">
-            <div className="absolute top-6 right-6 w-16 h-16 bg-gradient-to-br from-red-400 to-red-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+          <div className={`group relative ${designTokens.glass.medium} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105`}>
+            <div className={`absolute top-6 right-6 w-16 h-16 ${designTokens.gradients.icons.red} rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform`}>
               <XCircle className="text-white" size={32} />
             </div>
             <p className="text-gray-600 text-sm font-medium uppercase">Inactive</p>
@@ -164,8 +165,8 @@ export default function Vendors() {
             <p className="text-sm text-red-600 font-medium">Not active</p>
           </div>
 
-          <div className="group relative bg-white/80 backdrop-blur-2xl rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105 border border-blue-100">
-            <div className="absolute top-6 right-6 w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+          <div className={`group relative ${designTokens.glass.medium} rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all hover:scale-105`}>
+            <div className={`absolute top-6 right-6 w-16 h-16 ${designTokens.gradients.icons.blue} rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform`}>
               <Package className="text-white" size={32} />
             </div>
             <p className="text-gray-600 text-sm font-medium uppercase">Products</p>
@@ -175,7 +176,7 @@ export default function Vendors() {
         </div>
 
         {/* Search & Filter */}
-        <div className="bg-white/80 backdrop-blur-2xl rounded-3xl p-6 mb-8 shadow-xl">
+        <div className={`${designTokens.glass.light} rounded-3xl p-6 mb-8 shadow-xl`}>
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
             <div className="relative flex-1 max-w-2xl w-full">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -212,7 +213,7 @@ export default function Vendors() {
             <p className="text-gray-600">Loading vendors...</p>
           </div>
         ) : filteredVendors.length === 0 ? (
-          <div className="bg-white/80 backdrop-blur-2xl rounded-3xl p-12 shadow-xl text-center">
+          <div className={`${designTokens.glass.medium} rounded-3xl p-12 shadow-xl text-center`}>
             <Building2 size={64} className="mx-auto text-gray-300 mb-4" />
             <h3 className="text-2xl font-bold text-gray-900 mb-2">No Vendors Found</h3>
             <p className="text-gray-600 mb-6">{searchQuery ? 'No vendors match your search.' : 'Get started by adding your first vendor.'}</p>
@@ -226,10 +227,10 @@ export default function Vendors() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {filteredVendors.map((vendor) => (
-              <div key={vendor._id} className="group bg-white/80 backdrop-blur-2xl rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02] border border-gray-200">
+              <div key={vendor._id} className={`group ${designTokens.glass.medium} rounded-3xl p-6 shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]`}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                    <div className={`w-12 h-12 ${designTokens.gradients.icons.purple} rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg`}>
                       {vendor.name.charAt(0).toUpperCase()}
                     </div>
                     <div>
@@ -281,7 +282,7 @@ export default function Vendors() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl mb-4">
+                <div className={`flex items-center justify-between p-4 ${designTokens.gradients.decorative.purpleBlue} rounded-2xl mb-4`}>
                   <div className="flex items-center gap-2">
                     <Package size={20} className="text-purple-600" />
                     <span className="text-sm font-medium">Products Supplied</span>
@@ -307,8 +308,8 @@ export default function Vendors() {
 
       {/* Add/Edit Modal */}
       {(showAddModal || showEditModal) && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+        <div className={`fixed inset-0 ${designTokens.glass.overlay} flex items-center justify-center z-50 p-4`}>
+          <div className={`${designTokens.glass.card} rounded-3xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden`}>
             {/* Modal Header - Fixed */}
             <div className="bg-zennara-green p-6 flex items-center justify-between flex-shrink-0">
               <h2 className="text-2xl font-bold text-white">{selectedVendor ? 'Edit Vendor' : 'Add New Vendor'}</h2>
@@ -322,7 +323,7 @@ export default function Vendors() {
             <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6">
               <div className="space-y-6">
                 {/* Basic Info */}
-                <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6">
+                <div className={`${designTokens.gradients.decorative.purpleBlue} rounded-2xl p-6`}>
                   <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                     <Building2 className="text-purple-600" /> Basic Information
                   </h3>
@@ -374,7 +375,7 @@ export default function Vendors() {
                 </div>
 
                 {/* Address */}
-                <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6">
+                <div className={`${designTokens.gradients.decorative.greenTeal} rounded-2xl p-6`}>
                   <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                     <MapPin className="text-green-600" /> Address Information
                   </h3>
@@ -408,7 +409,7 @@ export default function Vendors() {
                 </div>
 
                 {/* Tax & Banking */}
-                <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-2xl p-6">
+                <div className={`${designTokens.gradients.decorative.orangeYellow} rounded-2xl p-6`}>
                   <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
                     <CreditCard className="text-orange-600" /> Tax & Banking Details
                   </h3>
@@ -483,8 +484,8 @@ export default function Vendors() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div className={`fixed inset-0 ${designTokens.glass.overlay} flex items-center justify-center z-50 p-4`}>
+          <div className={`${designTokens.glass.card} rounded-3xl shadow-2xl max-w-md w-full overflow-hidden`}>
             <div className="bg-red-600 p-6 flex items-center justify-between">
               <h2 className="text-2xl font-bold text-white">Delete Vendor</h2>
               <button onClick={() => { setShowDeleteConfirm(false); setSelectedVendor(null); }}

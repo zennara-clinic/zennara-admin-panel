@@ -189,16 +189,16 @@ export default function Dashboard() {
           <div className="animate-in fade-in duration-300">
             {/* Overview Tab */}
             {activeTab === 'overview' && (
-              <div className="space-y-8">
-                <div className="mb-8">
+              <div className="space-y-6">
+                <div className="mb-6">
                   <h2 className="text-3xl font-bold text-gray-900 mb-2 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Dashboard Overview</h2>
                   <p className="text-gray-600 text-lg">Real-time insights and performance metrics across all departments</p>
                 </div>
                 
                 {/* Key Performance Indicators */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                   {/* Financial KPI */}
-                  <div className="group relative bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 rounded-3xl p-5 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                     <div className="relative flex items-center justify-between mb-4">
@@ -219,7 +219,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Patients KPI */}
-                  <div className="group relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-3xl p-5 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                     <div className="relative flex items-center justify-between mb-4">
@@ -240,7 +240,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Appointments KPI */}
-                  <div className="group relative bg-gradient-to-br from-purple-500 via-purple-600 to-pink-700 rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-purple-500 via-purple-600 to-pink-700 rounded-3xl p-5 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                     <div className="relative flex items-center justify-between mb-4">
@@ -261,7 +261,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Services KPI */}
-                  <div className="group relative bg-gradient-to-br from-rose-500 via-rose-600 to-pink-700 rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-rose-500 via-rose-600 to-pink-700 rounded-3xl p-5 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                     <div className="relative flex items-center justify-between mb-4">
@@ -282,7 +282,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Inventory KPI */}
-                  <div className="group relative bg-gradient-to-br from-amber-500 via-orange-600 to-red-700 rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-amber-500 via-orange-600 to-red-700 rounded-3xl p-5 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                     <div className="relative flex items-center justify-between mb-4">
@@ -303,7 +303,7 @@ export default function Dashboard() {
                   </div>
 
                   {/* Orders KPI */}
-                  <div className="group relative bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 rounded-3xl p-6 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
+                  <div className="group relative bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-700 rounded-3xl p-5 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-500 overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-2xl group-hover:blur-3xl transition-all duration-500"></div>
                     <div className="relative flex items-center justify-between mb-4">
@@ -324,10 +324,10 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Charts Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+                {/* Charts Section - Improved Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Revenue Trend Chart */}
-                  <div className="group bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                  <div className="group bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
@@ -340,13 +340,15 @@ export default function Dashboard() {
                         <span>+15.3%</span>
                       </div>
                     </div>
-                    <div className="h-64 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl flex items-center justify-center">
-                      <MonthlyRevenueChart data={monthlyRevenue} />
+                    <div className="h-[280px] w-full bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl overflow-hidden">
+                      <div className="w-full h-full p-4">
+                        <MonthlyRevenueChart data={monthlyRevenue} />
+                      </div>
                     </div>
                   </div>
 
                   {/* Patient Growth Chart */}
-                  <div className="group bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                  <div className="group bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
@@ -356,28 +358,71 @@ export default function Dashboard() {
                       </div>
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-semibold">
                         <UserPlusIcon className="w-4 h-4" />
-                        <span>+23</span>
+                        <span>+{formatNumber(patientData?.newPatients || 0)}</span>
                       </div>
                     </div>
-                    <div className="h-64 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl flex items-center justify-center relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50"></div>
-                      <div className="relative text-center">
-                        <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mx-auto mb-4 shadow-lg">
-                          <UsersIcon className="w-10 h-10 text-white" />
+                    <div className="h-[280px] w-full bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl relative overflow-hidden p-6">
+                      {/* Background Decoration */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent"></div>
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-400/10 rounded-full blur-3xl"></div>
+                      <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-400/10 rounded-full blur-3xl"></div>
+                      
+                      {/* Content */}
+                      <div className="relative h-full flex flex-col justify-between">
+                        {/* Top Stats */}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                              <span className="text-sm font-medium text-gray-600">Total Patients</span>
+                            </div>
+                            <span className="text-lg font-bold text-gray-900">{formatNumber(patientData?.totalPatients || 0)}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                              <span className="text-sm font-medium text-gray-600">New This Month</span>
+                            </div>
+                            <span className="text-lg font-bold text-emerald-600">+{formatNumber(patientData?.newPatients || 0)}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                              <span className="text-sm font-medium text-gray-600">Growth Rate</span>
+                            </div>
+                            <span className="text-lg font-bold text-purple-600">+8.2%</span>
+                          </div>
                         </div>
-                        <p className="text-4xl font-bold text-gray-900 mb-2">{formatNumber(patientData?.newPatients || 0)}</p>
-                        <p className="text-sm text-gray-600 font-medium mb-4">New patients this month</p>
-                        <div className="flex items-center justify-center gap-2">
-                          {[...Array(7)].map((_, i) => (
-                            <div key={i} className="w-3 bg-gradient-to-t from-blue-400 to-blue-600 rounded-full" style={{height: `${40 + Math.random() * 60}px`}}></div>
-                          ))}
+
+                        {/* Middle Visual */}
+                        <div className="text-center py-4">
+                          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-xl mb-2">
+                            <UserPlusIcon className="w-10 h-10 text-white" />
+                          </div>
+                        </div>
+
+                        {/* Bottom Chart */}
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between text-xs text-gray-500 font-medium">
+                            <span>Last 7 days trend</span>
+                            <span className="text-emerald-600 font-semibold">↑ 12%</span>
+                          </div>
+                          <div className="flex items-end justify-between gap-1.5 h-16 bg-white/50 rounded-xl p-2">
+                            <div className="flex-1 bg-gradient-to-t from-blue-400 to-blue-600 rounded-t-lg h-10 hover:h-12 transition-all duration-300"></div>
+                            <div className="flex-1 bg-gradient-to-t from-blue-400 to-blue-600 rounded-t-lg h-12 hover:h-14 transition-all duration-300"></div>
+                            <div className="flex-1 bg-gradient-to-t from-blue-400 to-blue-600 rounded-t-lg h-8 hover:h-10 transition-all duration-300"></div>
+                            <div className="flex-1 bg-gradient-to-t from-blue-400 to-blue-600 rounded-t-lg h-14 hover:h-16 transition-all duration-300"></div>
+                            <div className="flex-1 bg-gradient-to-t from-emerald-400 to-emerald-600 rounded-t-lg h-11 hover:h-13 transition-all duration-300"></div>
+                            <div className="flex-1 bg-gradient-to-t from-emerald-400 to-emerald-600 rounded-t-lg h-13 hover:h-15 transition-all duration-300"></div>
+                            <div className="flex-1 bg-gradient-to-t from-emerald-400 to-emerald-600 rounded-t-lg h-16 hover:h-full transition-all duration-300 shadow-lg"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Appointment Status */}
-                  <div className="group bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                  {/* Today's Schedule - Full width on smaller screens, spans 2 cols on lg+ */}
+                  <div className="lg:col-span-2 group bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 hover:scale-[1.01] overflow-hidden">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
@@ -390,11 +435,11 @@ export default function Dashboard() {
                         <span>{formatNumber(appointmentData?.totalBookings || 0)}</span>
                       </div>
                     </div>
-                    <div className="space-y-3">
-                      <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl transition-all duration-300 border border-emerald-100">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="flex items-center justify-between p-5 bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 rounded-2xl transition-all duration-300 border border-emerald-100 shadow-sm">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <CheckCircleIcon className="w-5 h-5 text-white" />
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg">
+                            <CheckCircleIcon className="w-6 h-6 text-white" />
                           </div>
                           <div>
                             <p className="font-bold text-gray-900">Completed</p>
@@ -402,14 +447,13 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg font-bold text-emerald-600">{((appointmentData?.completedBookings || 0) / (appointmentData?.totalBookings || 1) * 100).toFixed(1)}%</div>
-                          <p className="text-xs text-emerald-600 font-medium">Success rate</p>
+                          <div className="text-xl font-bold text-emerald-600">{((appointmentData?.completedBookings || 0) / (appointmentData?.totalBookings || 1) * 100).toFixed(0)}%</div>
                         </div>
                       </div>
-                      <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-2xl transition-all duration-300 border border-blue-100">
+                      <div className="flex items-center justify-between p-5 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 rounded-2xl transition-all duration-300 border border-blue-100 shadow-sm">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <ClockIcon className="w-5 h-5 text-white" />
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg">
+                            <ClockIcon className="w-6 h-6 text-white" />
                           </div>
                           <div>
                             <p className="font-bold text-gray-900">Upcoming</p>
@@ -417,14 +461,13 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg font-bold text-blue-600">{((appointmentData?.upcomingBookings || 0) / (appointmentData?.totalBookings || 1) * 100).toFixed(1)}%</div>
-                          <p className="text-xs text-blue-600 font-medium">Pending</p>
+                          <div className="text-xl font-bold text-blue-600">{((appointmentData?.upcomingBookings || 0) / (appointmentData?.totalBookings || 1) * 100).toFixed(0)}%</div>
                         </div>
                       </div>
-                      <div className="group flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-red-50 hover:from-orange-100 hover:to-red-100 rounded-2xl transition-all duration-300 border border-orange-100">
+                      <div className="flex items-center justify-between p-5 bg-gradient-to-r from-orange-50 to-red-50 hover:from-orange-100 hover:to-red-100 rounded-2xl transition-all duration-300 border border-orange-100 shadow-sm">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                            <XCircleIcon className="w-5 h-5 text-white" />
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg">
+                            <XCircleIcon className="w-6 h-6 text-white" />
                           </div>
                           <div>
                             <p className="font-bold text-gray-900">Cancelled</p>
@@ -432,8 +475,7 @@ export default function Dashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg font-bold text-orange-600">{((appointmentData?.cancelledBookings || 0) / (appointmentData?.totalBookings || 1) * 100).toFixed(1)}%</div>
-                          <p className="text-xs text-orange-600 font-medium">Cancellation</p>
+                          <div className="text-xl font-bold text-orange-600">{((appointmentData?.cancelledBookings || 0) / (appointmentData?.totalBookings || 1) * 100).toFixed(0)}%</div>
                         </div>
                       </div>
                     </div>
@@ -441,60 +483,60 @@ export default function Dashboard() {
                 </div>
 
                 {/* Quick Actions & Recent Activity */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                   {/* Quick Actions */}
-                  <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500">
+                  <div className="lg:col-span-4 bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 overflow-hidden">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-lg font-bold text-gray-900">Quick Actions</h3>
                       <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
                         <LightningBoltIcon className="w-4 h-4 text-white" />
                       </div>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <button 
                         onClick={() => window.location.href = '/appointments/new'}
-                        className="group w-full flex items-center gap-4 p-5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        className="group w-full flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                       >
-                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <PlusIcon className="w-6 h-6 text-white" />
+                        <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <PlusIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 text-left">
-                          <span className="font-bold text-white block mb-1">New Appointment</span>
+                          <span className="font-bold text-white block text-sm mb-0.5">New Appointment</span>
                           <span className="text-xs text-white/80">Schedule patient consultation</span>
                         </div>
-                        <ArrowRightIcon className="w-5 h-5 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                        <ArrowRightIcon className="w-4 h-4 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                       </button>
                       <button 
                         onClick={() => window.location.href = '/patients/new'}
-                        className="group w-full flex items-center gap-4 p-5 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        className="group w-full flex items-center gap-3 p-4 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                       >
-                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <UserPlusIcon className="w-6 h-6 text-white" />
+                        <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <UserPlusIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 text-left">
-                          <span className="font-bold text-white block mb-1">Add Patient</span>
+                          <span className="font-bold text-white block text-sm mb-0.5">Add Patient</span>
                           <span className="text-xs text-white/80">Register new patient</span>
                         </div>
-                        <ArrowRightIcon className="w-5 h-5 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                        <ArrowRightIcon className="w-4 h-4 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                       </button>
                       <button 
                         onClick={() => window.location.href = '/orders/new'}
-                        className="group w-full flex items-center gap-4 p-5 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        className="group w-full flex items-center gap-3 p-4 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                       >
-                        <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <ShoppingBagIcon className="w-6 h-6 text-white" />
+                        <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <ShoppingBagIcon className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 text-left">
-                          <span className="font-bold text-white block mb-1">New Order</span>
+                          <span className="font-bold text-white block text-sm mb-0.5">New Order</span>
                           <span className="text-xs text-white/80">Create product order</span>
                         </div>
-                        <ArrowRightIcon className="w-5 h-5 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
+                        <ArrowRightIcon className="w-4 h-4 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all duration-300" />
                       </button>
                     </div>
                   </div>
 
                   {/* Recent Activity */}
-                  <div className="lg:col-span-2 bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500">
+                  <div className="lg:col-span-8 bg-gradient-to-br from-white to-gray-50 rounded-3xl p-8 shadow-xl border border-gray-100 hover:shadow-2xl transition-all duration-500 overflow-hidden">
                     <div className="flex items-center justify-between mb-6">
                       <h3 className="text-lg font-bold text-gray-900">Recent Activity</h3>
                       <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold">

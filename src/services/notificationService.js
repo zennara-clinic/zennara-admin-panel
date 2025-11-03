@@ -1,6 +1,6 @@
 import api, { API_BASE_URL } from '../config/api';
 
-const NOTIFICATION_BASE_URL = `${API_BASE_URL}/api/admin/notifications`;
+const NOTIFICATION_BASE_URL = `${API_BASE_URL}/api/notifications/admin`;
 
 class NotificationService {
   /**

@@ -70,9 +70,12 @@ export default function InventoryAnalytics() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-8 py-12">
         {/* Header */}
-        <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">📦 Inventory & Product Insights</h1>
-          <p className="text-base text-gray-600">Comprehensive inventory management and analytics</p>
+        <div className="mb-12 flex items-center gap-3">
+          <Package size={32} className="text-emerald-600" />
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">Inventory & Product Insights</h1>
+            <p className="text-base text-gray-600">Comprehensive inventory management and analytics</p>
+          </div>
         </div>
 
         {/* Summary Cards */}

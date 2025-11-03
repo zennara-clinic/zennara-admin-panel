@@ -12,6 +12,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon
 } from '../components/Icons';
+import { designTokens } from '../design-system/tokens';
 
 export default function TodaySchedule() {
   const navigate = useNavigate();
@@ -213,7 +214,7 @@ export default function TodaySchedule() {
   const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30">
+    <div className={`min-h-screen ${designTokens.gradients.backgrounds.slate}`}>
       <div className="max-w-[1800px] mx-auto px-6 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -228,7 +229,7 @@ export default function TodaySchedule() {
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <div className="flex items-center space-x-4">
-                <div className="p-3 bg-gradient-to-br from-zennara-green/10 to-emerald-100 rounded-2xl">
+                <div className={`p-3 ${designTokens.gradients.statCards.emerald} rounded-2xl`}>
                   <CalendarIcon className="w-8 h-8 text-zennara-green" />
                 </div>
                 <div>
@@ -244,9 +245,9 @@ export default function TodaySchedule() {
             
             {/* Stats Cards */}
             <div className="flex items-center space-x-4">
-              <div className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-3xl px-8 py-6 shadow-xl shadow-slate-200/50">
+              <div className={`${designTokens.glass.medium} rounded-3xl px-8 py-6 shadow-xl shadow-slate-200/50`}>
                 <div className="text-center">
-                  <div className="text-3xl font-bold bg-gradient-to-r from-zennara-green to-emerald-600 bg-clip-text text-transparent">
+                  <div className={`text-3xl font-bold ${designTokens.gradients.text.primary} bg-clip-text text-transparent`}>
                     {bookings.length}
                   </div>
                   <div className="text-sm font-semibold text-slate-600 mt-1">
@@ -255,9 +256,9 @@ export default function TodaySchedule() {
                 </div>
               </div>
               
-              <div className="bg-white/80 backdrop-blur-xl border border-white/20 rounded-3xl px-8 py-6 shadow-xl shadow-slate-200/50">
+              <div className={`${designTokens.glass.medium} rounded-3xl px-8 py-6 shadow-xl shadow-slate-200/50`}>
                 <div className="text-center">
-                  <div className="text-3xl font-bold bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent">
+                  <div className={`text-3xl font-bold ${designTokens.gradients.text.emerald} bg-clip-text text-transparent`}>
                     {statusCounts['Confirmed']}
                   </div>
                   <div className="text-sm font-semibold text-slate-600 mt-1">
@@ -274,7 +275,7 @@ export default function TodaySchedule() {
           {/* Left Sidebar - Calendar Widget */}
           <div className="xl:col-span-1">
             {/* Mini Calendar */}
-            <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl shadow-slate-200/30 p-6 mb-8">
+            <div className={`${designTokens.glass.heavy} rounded-3xl shadow-2xl shadow-slate-200/30 p-6 mb-8`}>
               <div className="flex items-center justify-between mb-6">
                 <button
                   onClick={previousMonth}
@@ -319,9 +320,9 @@ export default function TodaySchedule() {
                         isPast
                           ? 'text-slate-300 cursor-not-allowed'
                           : isSelectedDate
-                            ? 'bg-gradient-to-br from-zennara-green to-emerald-600 text-white shadow-xl shadow-emerald-200 scale-110 cursor-pointer'
+                            ? `${designTokens.gradients.components.primary} text-white shadow-xl shadow-emerald-200 scale-110 cursor-pointer`
                             : isTodayDate
-                              ? 'bg-gradient-to-br from-blue-50 to-indigo-100 text-indigo-700 font-bold cursor-pointer hover:shadow-lg hover:scale-105'
+                              ? `${designTokens.gradients.statCards.blue} text-indigo-700 font-bold cursor-pointer hover:shadow-lg hover:scale-105`
                               : 'hover:bg-slate-100 text-slate-700 cursor-pointer hover:scale-105'
                       }`}
                     >
@@ -333,18 +334,18 @@ export default function TodaySchedule() {
             </div>
 
             {/* Status Legend */}
-            <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl shadow-slate-200/30 p-6">
+            <div className={`${designTokens.glass.heavy} rounded-3xl shadow-2xl shadow-slate-200/30 p-6`}>
               <h3 className="text-lg font-bold text-slate-900 mb-6">Status Overview</h3>
               <div className="space-y-4">
                 {[
-                  { status: 'Confirmed', color: 'bg-emerald-500', count: statusCounts['Confirmed'], gradient: 'from-emerald-500 to-green-600' },
-                  { status: 'Awaiting', color: 'bg-amber-500', count: statusCounts['Awaiting Confirmation'], gradient: 'from-amber-500 to-orange-600' },
-                  { status: 'In Progress', color: 'bg-violet-500', count: statusCounts['In Progress'], gradient: 'from-violet-500 to-purple-600' },
-                  { status: 'Completed', color: 'bg-slate-500', count: statusCounts['Completed'], gradient: 'from-slate-500 to-gray-600' }
+                  { status: 'Confirmed', color: 'bg-emerald-500', count: statusCounts['Confirmed'], gradient: designTokens.gradients.status.confirmed },
+                  { status: 'Awaiting', color: 'bg-amber-500', count: statusCounts['Awaiting Confirmation'], gradient: designTokens.gradients.status.awaiting },
+                  { status: 'In Progress', color: 'bg-violet-500', count: statusCounts['In Progress'], gradient: designTokens.gradients.status.inProgress },
+                  { status: 'Completed', color: 'bg-slate-500', count: statusCounts['Completed'], gradient: designTokens.gradients.status.completed }
                 ].map((item) => (
                   <div key={item.status} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50/50 transition-all duration-200">
                     <div className="flex items-center space-x-3">
-                      <div className={`w-4 h-4 rounded-full bg-gradient-to-r ${item.gradient} shadow-lg`} />
+                      <div className={`w-4 h-4 rounded-full ${item.gradient} shadow-lg`} />
                       <span className="text-sm font-semibold text-slate-700">{item.status}</span>
                     </div>
                     <div className="px-3 py-1 bg-slate-100 rounded-full">
@@ -359,7 +360,7 @@ export default function TodaySchedule() {
           {/* Right Main Section - Day View Time Slots */}
           <div className="xl:col-span-4">
             {/* Status Filters */}
-            <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-3xl p-6 shadow-2xl shadow-slate-200/30 mb-8">
+            <div className={`${designTokens.glass.light} rounded-3xl p-6 shadow-2xl shadow-slate-200/30 mb-8`}>
               <div className="flex items-center space-x-3 overflow-x-auto pb-2">
                 {[
                   { label: 'All', value: 'all', count: statusCounts.all, color: 'from-slate-600 to-slate-700' },
@@ -373,7 +374,7 @@ export default function TodaySchedule() {
                     onClick={() => setSelectedStatus(filter.value)}
                     className={`px-6 py-3 rounded-2xl text-sm font-bold transition-all duration-300 whitespace-nowrap transform hover:scale-105 ${
                       selectedStatus === filter.value
-                        ? `bg-gradient-to-r ${filter.color} text-white shadow-xl shadow-slate-200`
+                        ? `${filter.color} text-white shadow-xl shadow-slate-200`
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:shadow-lg'
                     }`}
                   >
@@ -387,10 +388,10 @@ export default function TodaySchedule() {
             </div>
 
             {/* Day Planner View */}
-            <div className="bg-white/90 backdrop-blur-xl border border-white/30 rounded-3xl shadow-2xl shadow-slate-200/30 overflow-hidden">
+            <div className={`${designTokens.glass.heavy} rounded-3xl shadow-2xl shadow-slate-200/30 overflow-hidden`}>
               {filteredBookings.length === 0 ? (
                 <div className="p-24 text-center">
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-slate-100 to-slate-200 rounded-3xl flex items-center justify-center">
+                  <div className={`w-20 h-20 mx-auto mb-6 ${designTokens.gradients.statCards.slate} rounded-3xl flex items-center justify-center`}>
                     <CalendarIcon className="w-10 h-10 text-slate-400" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-3">No Appointments</h3>
@@ -409,7 +410,7 @@ export default function TodaySchedule() {
                       <div key={timeSlot} className="border-b border-slate-100/50 last:border-0">
                         <div className="flex">
                           {/* Time Column */}
-                          <div className="w-32 flex-shrink-0 p-6 bg-gradient-to-br from-slate-50 to-slate-100/50 border-r border-slate-100/50">
+                          <div className={`w-32 flex-shrink-0 p-6 ${designTokens.gradients.statCards.slate} border-r border-slate-100/50`}>
                             <div className="text-base font-bold text-slate-700">{timeSlot}</div>
                           </div>
 

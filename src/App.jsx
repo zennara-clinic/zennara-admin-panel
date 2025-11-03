@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
+import MinimalDashboard from './components/Dashboard';
 import Bookings from './pages/Bookings';
 import BookingDetails from './pages/BookingDetails';
 import BookingSlip from './pages/BookingSlip';
@@ -79,7 +80,8 @@ function App() {
                   <Header />
                   <main className="flex-1 overflow-y-auto">
                     <Routes>
-                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/" element={<MinimalDashboard />} />
+                    <Route path="/dashboard/old" element={<Dashboard />} />
                     <Route path="/bookings" element={<Bookings />} />
                     <Route path="/bookings/pending" element={<PendingConfirmations />} />
                     <Route path="/bookings/today" element={<TodaySchedule />} />

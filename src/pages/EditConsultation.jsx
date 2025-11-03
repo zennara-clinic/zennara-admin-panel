@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  ChevronLeftIcon,
-  UploadIcon,
-  XIcon,
-  CheckCircleIcon
-} from '../components/Icons';
+  ArrowLeft,
+  Upload,
+  X,
+  CheckCircle,
+  AlertCircle,
+  Trash2,
+  Clipboard
+} from 'lucide-react';
 import consultationService from '../services/consultationService';
 import { SkeletonForm } from '../components/SkeletonLoader';
 import { API_BASE_URL } from '../config/api';

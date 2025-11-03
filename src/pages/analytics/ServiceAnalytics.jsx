@@ -7,7 +7,8 @@ import {
   Clock,
   Tag,
   PlusCircle,
-  CheckCircle
+  CheckCircle,
+  Building2
 } from 'lucide-react';
 import { getServiceAnalytics } from '../../services/analyticsService';
 
@@ -92,9 +93,12 @@ export default function ServiceAnalytics() {
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">🏥 Service & Treatment Performance</h1>
-              <p className="text-base text-gray-600">Comprehensive service analytics and insights</p>
+            <div className="flex items-center gap-3">
+              <Building2 size={32} className="text-emerald-600" />
+              <div>
+                <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-2">Service & Treatment Performance</h1>
+                <p className="text-base text-gray-600">Comprehensive service analytics and insights</p>
+              </div>
             </div>
             
             <select
@@ -399,7 +403,10 @@ export default function ServiceAnalytics() {
                     </div>
                   </div>
                   {service.bookings === 0 && (
-                    <p className="text-xs text-red-600 font-medium">⚠️ No bookings yet</p>
+                    <p className="text-xs text-red-600 font-medium flex items-center gap-1">
+                      <AlertTriangle size={14} />
+                      No bookings yet
+                    </p>
                   )}
                 </div>
               ))}
