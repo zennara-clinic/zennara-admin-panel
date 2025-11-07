@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "8aea49d5-3f2b-46b6-9ab2-a4fbd59c894f"
+      }
+    },
+    "android": {
+      "package": "com.zennaraclinic.zennara"
+    }
+  }
+}

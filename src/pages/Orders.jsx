@@ -6,7 +6,7 @@ import { API_BASE_URL } from '../config/api';
 // Status badge component
 const StatusBadge = ({ status }) => {
   const statusConfig = {
-    'Pending': { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-200' },
+    'Order Placed': { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-200' },
     'Confirmed': { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-200' },
     'Processing': { bg: 'bg-indigo-100', text: 'text-indigo-800', border: 'border-indigo-200' },
     'Packed': { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-200' },
@@ -17,7 +17,7 @@ const StatusBadge = ({ status }) => {
     'Returned': { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-200' },
   };
 
-  const config = statusConfig[status] || statusConfig['Pending'];
+  const config = statusConfig[status] || statusConfig['Order Placed'];
 
   return (
     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${config.bg} ${config.text} ${config.border}`}>
@@ -70,9 +70,9 @@ export default function Orders() {
       });
       
       if (response.data.success) {
-        // Filter out pending orders - they are managed in the Pending Orders page
-        const nonPendingOrders = response.data.data.filter(order => order.orderStatus !== 'Pending');
-        setOrders(nonPendingOrders);
+        // Filter out new orders - they are managed in the New Orders page
+        const nonNewOrders = response.data.data.filter(order => order.orderStatus !== 'Order Placed');
+        setOrders(nonNewOrders);
       }
     } catch (err) {
       console.error('Error fetching orders:', err);

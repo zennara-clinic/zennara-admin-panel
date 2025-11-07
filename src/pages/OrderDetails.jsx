@@ -91,8 +91,8 @@ export default function OrderDetails() {
   }
 
   const statusOptions = [
-    'Pending', 'Confirmed', 'Processing', 'Packed', 
-    'Shipped', 'Out for Delivery', 'Delivered'
+    'Order Placed', 'Confirmed', 'Processing', 'Packed', 
+    'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'
   ];
 
   return (

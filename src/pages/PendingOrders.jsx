@@ -6,11 +6,11 @@ import { API_BASE_URL } from '../config/api';
 // Status badge component
 const StatusBadge = ({ status }) => {
   const statusConfig = {
-    'Pending': { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-200', dot: 'bg-amber-500' },
+    'Order Placed': { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-200', dot: 'bg-amber-500' },
     'Confirmed': { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-200', dot: 'bg-blue-500' },
   };
 
-  const config = statusConfig[status] || statusConfig['Pending'];
+  const config = statusConfig[status] || statusConfig['Order Placed'];
 
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border ${config.bg} ${config.text} ${config.border}`}>
@@ -53,7 +53,7 @@ export default function PendingOrders() {
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-      const response = await axios.get(`${API_BASE_URL}/api/admin/product-orders?status=Pending`, {
+      const response = await axios.get(`${API_BASE_URL}/api/admin/product-orders?status=Order%20Placed`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -161,9 +161,9 @@ export default function PendingOrders() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">Pending Orders</h1>
+              <h1 className="text-4xl font-semibold text-gray-900 tracking-tight">New Orders</h1>
             </div>
-            <p className="text-base text-gray-500 ml-15">Orders awaiting confirmation and processing</p>
+            <p className="text-base text-gray-500 ml-15">Orders placed by customers awaiting confirmation</p>
           </div>
           <button
             onClick={fetchPendingOrders}
@@ -181,7 +181,7 @@ export default function PendingOrders() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="group bg-gradient-to-br from-amber-50 to-yellow-50/50 backdrop-blur-xl rounded-2xl shadow-sm border border-amber-100/50 p-6 hover:shadow-xl hover:scale-105 transition-all duration-300 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-transparent rounded-full -mr-12 -mt-12"></div>
-          <p className="text-xs font-medium text-amber-700 uppercase tracking-wider mb-2 relative z-10">Total Pending</p>
+          <p className="text-xs font-medium text-amber-700 uppercase tracking-wider mb-2 relative z-10">New Orders</p>
           <p className="text-4xl font-semibold text-amber-900 relative z-10">{stats.total}</p>
           <div className="mt-4 h-1 w-16 bg-gradient-to-r from-amber-400 to-yellow-300 rounded-full relative z-10"></div>
         </div>
@@ -264,8 +264,8 @@ export default function PendingOrders() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <p className="text-lg font-medium text-gray-900 mb-1">No pending orders</p>
-                      <p className="text-sm text-gray-500">All orders have been processed</p>
+                      <p className="text-lg font-medium text-gray-900 mb-1">No new orders</p>
+                      <p className="text-sm text-gray-500">All orders have been confirmed</p>
                     </div>
                   </td>
                 </tr>
@@ -379,7 +379,7 @@ export default function PendingOrders() {
       {filteredOrders.length > 0 && (
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
-            Showing <span className="font-semibold text-amber-600">{filteredOrders.length}</span> of <span className="font-semibold">{orders.length}</span> pending orders
+            Showing <span className="font-semibold text-amber-600">{filteredOrders.length}</span> of <span className="font-semibold">{orders.length}</span> new orders
           </p>
         </div>
       )}
