@@ -269,7 +269,7 @@ export default function ConsultationServices() {
               className={`bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300 group ${!service.isActive ? 'opacity-60 grayscale' : ''}`}
             >
               {/* Image */}
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-64 overflow-hidden">
                 <img
                   src={service.image}
                   alt={service.name}
