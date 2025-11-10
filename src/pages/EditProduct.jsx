@@ -306,8 +306,15 @@ export default function EditProduct() {
       }, 1500);
     } catch (error) {
       console.error('Error updating product:', error);
-      setError(error.response?.data?.message || 'Failed to update product');
-      setTimeout(() => setError(null), 3000);
+      console.error('Error response data:', error.response?.data);
+      console.error('Error status:', error.response?.status);
+      console.error('Full error details:', {
+        message: error.response?.data?.message,
+        error: error.response?.data?.error,
+        status: error.response?.status
+      });
+      setError(error.response?.data?.message || error.response?.data?.error || 'Failed to update product');
+      setTimeout(() => setError(null), 5000);
     } finally {
       setSaving(false);
     }
