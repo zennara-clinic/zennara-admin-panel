@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-  ArrowLeft,
-  Upload,
-  X,
-  CheckCircle,
-  AlertCircle,
-  Trash2,
-  Clipboard
-} from 'lucide-react';
+  ChevronLeftIcon,
+  UploadIcon,
+  XIcon,
+  CheckCircleIcon,
+  AlertCircleIcon,
+  TrashIcon
+} from '../components/Icons';
 import consultationService from '../services/consultationService';
 import { SkeletonForm } from '../components/SkeletonLoader';
 import { API_BASE_URL } from '../config/api';
@@ -325,25 +324,45 @@ export default function EditConsultation() {
       const formDataUpload = new FormData();
       formDataUpload.append('media', file);
 
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert('⚠️ Authentication token not found. Please login again.');
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/upload/media`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formDataUpload
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Upload response error:', response.status, errorText);
+        alert(`❌ Upload failed: ${response.status} - ${errorText || 'Server error'}`);
+        return;
+      }
+
       const result = await response.json();
+      console.log('Upload result:', result);
       
-      if (result.success && result.data.length > 0) {
+      if (result.success && result.data && result.data.length > 0) {
         setFormData(prev => ({
           ...prev,
           image: result.data[0].url
         }));
+        alert('✅ Primary image uploaded successfully!');
         // Reset file input
         e.target.value = '';
       } else {
-        console.error('Upload failed:', result.message);
+        console.error('Upload failed:', result.message || 'No data returned');
+        alert(`❌ Upload failed: ${result.message || 'No data returned'}`);
       }
     } catch (error) {
       console.error('Primary image upload error:', error);
+      alert(`❌ Error uploading image: ${error.message}`);
     } finally {
       setUploadingPrimary(false);
     }
@@ -361,25 +380,45 @@ export default function EditConsultation() {
         formDataUpload.append('media', file);
       });
 
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        alert('⚠️ Authentication token not found. Please login again.');
+        return;
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/upload/media`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formDataUpload
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Upload response error:', response.status, errorText);
+        alert(`❌ Upload failed: ${response.status} - ${errorText || 'Server error'}`);
+        return;
+      }
+
       const result = await response.json();
+      console.log('Media upload result:', result);
       
-      if (result.success) {
+      if (result.success && result.data) {
         setFormData(prev => ({
           ...prev,
           media: [...(prev.media || []), ...result.data]
         }));
+        alert(`✅ ${result.data.length} media file(s) uploaded successfully!`);
         // Reset file input
         e.target.value = '';
       } else {
-        console.error('Upload failed:', result.message);
+        console.error('Upload failed:', result.message || 'No data returned');
+        alert(`❌ Upload failed: ${result.message || 'No data returned'}`);
       }
     } catch (error) {
       console.error('Upload error:', error);
+      alert(`❌ Error uploading media: ${error.message}`);
     } finally {
       setUploading(false);
     }
@@ -390,9 +429,13 @@ export default function EditConsultation() {
 
     try {
       setUploading(true);
+      const token = localStorage.getItem('adminToken');
       const response = await fetch(`${API_BASE_URL}/api/upload/media-url`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ url: mediaUrl, type: mediaType })
       });
 
@@ -431,10 +474,14 @@ export default function EditConsultation() {
       try {
         console.log('🗑️ Deleting from Cloudinary:', mediaItem.publicId);
         
+        const token = localStorage.getItem('adminToken');
         const response = await fetch(
           `${API_BASE_URL}/api/upload/media/${encodeURIComponent(mediaItem.publicId)}?resourceType=${mediaItem.type}`,
           {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
           }
         );
 
