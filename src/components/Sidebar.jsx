@@ -13,7 +13,8 @@ import {
   ChevronDown,
   ArrowRight,
   Upload,
-  ClipboardList
+  ClipboardList,
+  Smartphone
 } from 'lucide-react';
 
 const navigationItems = [
@@ -100,6 +101,11 @@ const navigationItems = [
     submenu: [
       { title: 'Clinic Branches', path: '/locations/branches' },
     ],
+  },
+  {
+    title: 'App Customization',
+    icon: Smartphone,
+    path: '/app/customization',
   },
   {
     title: 'Communications',

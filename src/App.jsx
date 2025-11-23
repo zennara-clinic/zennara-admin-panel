@@ -63,6 +63,7 @@ import AppointmentAnalytics from './pages/analytics/AppointmentAnalytics';
 import ServiceAnalytics from './pages/analytics/ServiceAnalytics';
 import InventoryAnalytics from './pages/analytics/InventoryAnalytics';
 import Notifications from './pages/Notifications';
+import AppCustomization from './pages/appui/AppCustomization';
 
 function App() {
   return (
@@ -150,6 +151,7 @@ function App() {
                     <Route path="/locations" element={<Locations />} />
                     <Route path="/locations/branches" element={<Locations />} />
                     <Route path="/notifications" element={<Notifications />} />
+                    <Route path="/app/customization" element={<AppCustomization />} />
                   </Routes>
                   </main>
                 </div>

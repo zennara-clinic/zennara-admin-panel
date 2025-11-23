@@ -10,6 +10,29 @@ export default function CancelledOrders() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showRefundModal, setShowRefundModal] = useState(false);
+  const [refundProcessing, setRefundProcessing] = useState(false);
+  const [bankDetails, setBankDetails] = useState(null);
+  const [loadingBankDetails, setLoadingBankDetails] = useState(false);
+  const [showCompleteRefundModal, setShowCompleteRefundModal] = useState(false);
+  const [completeRefundForm, setCompleteRefundForm] = useState({
+    transactionId: '',
+    transactionProof: '',
+    notes: ''
+  });
+  const [completeRefundProcessing, setCompleteRefundProcessing] = useState(false);
+  const [refundForm, setRefundForm] = useState({
+    refundMethod: '',
+    transactionId: '',
+    notes: '',
+    bankDetails: {
+      accountHolderName: '',
+      bankName: '',
+      accountNumber: '',
+      ifscCode: '',
+      upiId: ''
+    }
+  });
 
   useEffect(() => {
     fetchCancelledOrders();
@@ -41,26 +64,139 @@ export default function CancelledOrders() {
     setShowDetailsModal(true);
   };
 
-  const handleProcessRefund = async (order) => {
-    if (!window.confirm(`Process refund of ₹${order.pricing?.total?.toLocaleString('en-IN')} for order #${order.orderNumber}?`)) {
-      return;
+  const handleOpenRefundModal = async (order) => {
+    setSelectedOrder(order);
+    setRefundForm({
+      refundMethod: order.paymentMethod === 'COD' ? '' : 'Razorpay',
+      transactionId: '',
+      notes: '',
+      bankDetails: {
+        accountHolderName: '',
+        bankName: '',
+        accountNumber: '',
+        ifscCode: '',
+        upiId: ''
+      }
+    });
+    
+    // For COD orders, fetch customer bank details
+    if (order.paymentMethod === 'COD' && order.userId?._id) {
+      setLoadingBankDetails(true);
+      try {
+        const token = localStorage.getItem('adminToken');
+        const response = await axios.get(
+          `${API_BASE_URL}/api/admin/product-orders/user/${order.userId._id}/bank-details`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        if (response.data.success && response.data.data.hasBankDetails) {
+          setBankDetails(response.data.data.bankDetails);
+          setRefundForm(prev => ({
+            ...prev,
+            bankDetails: response.data.data.bankDetails
+          }));
+        } else {
+          setBankDetails(null);
+        }
+      } catch (err) {
+        console.error('Error fetching bank details:', err);
+        setBankDetails(null);
+      } finally {
+        setLoadingBankDetails(false);
+      }
     }
+    
+    setShowRefundModal(true);
+  };
 
+  const handleProcessRefund = async () => {
     try {
+      setRefundProcessing(true);
       const token = localStorage.getItem('adminToken');
-      // TODO: Implement refund API call
-      alert('Refund processing functionality will be implemented with payment gateway integration');
       
-      // For now, just update the payment status
-      // await axios.put(`${API_BASE_URL}/api/admin/product-orders/${order._id}/refund`, {}, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
+      // Validate form
+      if (!refundForm.refundMethod) {
+        alert('Please select a refund method');
+        return;
+      }
       
-      // Refresh the list
-      fetchCancelledOrders();
+      if (selectedOrder.paymentMethod === 'COD') {
+        if (refundForm.refundMethod === 'Bank Transfer') {
+          if (!refundForm.bankDetails.accountNumber || !refundForm.bankDetails.ifscCode) {
+            alert('Please provide complete bank details for bank transfer');
+            return;
+          }
+        } else if (refundForm.refundMethod === 'UPI' && !refundForm.bankDetails.upiId) {
+          alert('Please provide UPI ID');
+          return;
+        }
+      }
+      
+      // Initiate refund
+      const payload = {
+        refundMethod: refundForm.refundMethod,
+        notes: refundForm.notes,
+        transactionId: refundForm.transactionId || undefined
+      };
+      
+      if (selectedOrder.paymentMethod === 'COD' && 
+          (refundForm.refundMethod === 'Bank Transfer' || refundForm.refundMethod === 'UPI')) {
+        payload.bankDetails = refundForm.bankDetails;
+      }
+      
+      const response = await axios.post(
+        `${API_BASE_URL}/api/admin/product-orders/${selectedOrder._id}/initiate-refund`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success) {
+        alert(`Refund initiated successfully via ${refundForm.refundMethod}`);
+        setShowRefundModal(false);
+        fetchCancelledOrders();
+      }
     } catch (err) {
       console.error('Error processing refund:', err);
-      alert('Failed to process refund');
+      alert(err.response?.data?.message || 'Failed to process refund');
+    } finally {
+      setRefundProcessing(false);
+    }
+  };
+
+  const handleCompleteRefund = async () => {
+    try {
+      setCompleteRefundProcessing(true);
+      const token = localStorage.getItem('adminToken');
+      
+      // Validate form
+      if (!completeRefundForm.transactionId.trim()) {
+        alert('Please enter transaction ID');
+        return;
+      }
+      
+      const payload = {
+        transactionId: completeRefundForm.transactionId,
+        transactionProof: completeRefundForm.transactionProof || undefined,
+        notes: completeRefundForm.notes || undefined
+      };
+      
+      const response = await axios.put(
+        `${API_BASE_URL}/api/admin/product-orders/${selectedOrder._id}/complete-refund`,
+        payload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.success) {
+        alert('Refund marked as completed successfully');
+        setShowCompleteRefundModal(false);
+        setCompleteRefundForm({ transactionId: '', transactionProof: '', notes: '' });
+        fetchCancelledOrders();
+      }
+    } catch (err) {
+      console.error('Error completing refund:', err);
+      alert(err.response?.data?.message || 'Failed to complete refund');
+    } finally {
+      setCompleteRefundProcessing(false);
     }
   };
 
@@ -263,9 +399,9 @@ export default function CancelledOrders() {
                           </svg>
                           View
                         </button>
-                        {order.paymentStatus === 'Paid' && (
+                        {order.paymentStatus === 'Paid' && !order.refundDetails?.status && (
                           <button
-                            onClick={() => handleProcessRefund(order)}
+                            onClick={() => handleOpenRefundModal(order)}
                             className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-medium rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-200"
                           >
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -273,6 +409,30 @@ export default function CancelledOrders() {
                             </svg>
                             Process Refund
                           </button>
+                        )}
+                        {order.refundDetails?.status === 'Processing' && (
+                          <button
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setCompleteRefundForm({ transactionId: '', transactionProof: '', notes: '' });
+                              setShowCompleteRefundModal(true);
+                            }}
+                            className="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-200"
+                          >
+                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                            Complete Refund
+                          </button>
+                        )}
+                        {order.refundDetails?.status && (
+                          <span className={`inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg ${
+                            order.refundDetails.status === 'Completed' ? 'bg-green-100 text-green-800' :
+                            order.refundDetails.status === 'Processing' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {order.refundDetails.status}
+                          </span>
                         )}
                       </div>
                     </td>
@@ -395,6 +555,305 @@ export default function CancelledOrders() {
                   className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-medium"
                 >
                   Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Refund Processing Modal */}
+      {showRefundModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-3xl w-full p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Process Refund</h2>
+                <p className="text-sm text-gray-500 mt-1">Order #{selectedOrder.orderNumber}</p>
+                <p className="text-lg font-semibold text-green-600 mt-2">
+                  Refund Amount: ₹{selectedOrder.pricing?.total?.toLocaleString('en-IN')}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRefundModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Payment Method Info */}
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <p className="text-sm font-medium text-blue-900">
+                  Original Payment Method: <span className="font-bold">{selectedOrder.paymentMethod}</span>
+                </p>
+              </div>
+
+              {/* Refund Method Selection */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Select Refund Method <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={refundForm.refundMethod}
+                  onChange={(e) => setRefundForm({...refundForm, refundMethod: e.target.value})}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
+                  disabled={selectedOrder.paymentMethod !== 'COD'}
+                >
+                  <option value="">-- Select Refund Method --</option>
+                  {selectedOrder.paymentMethod === 'COD' ? (
+                    <>
+                      <option value="Bank Transfer">Bank Transfer</option>
+                      <option value="UPI">UPI</option>
+                      <option value="Cash">Cash</option>
+                      <option value="Store Credit">Store Credit</option>
+                    </>
+                  ) : (
+                    <option value="Razorpay">Razorpay (Automatic)</option>
+                  )}
+                </select>
+              </div>
+
+              {/* COD - Bank Details Section */}
+              {selectedOrder.paymentMethod === 'COD' && 
+               (refundForm.refundMethod === 'Bank Transfer' || refundForm.refundMethod === 'UPI') && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg className="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Customer Bank Details
+                  </h3>
+
+                  {loadingBankDetails ? (
+                    <p className="text-gray-500 italic">Loading customer bank details...</p>
+                  ) : bankDetails && bankDetails.accountNumber ? (
+                    <div className="bg-white rounded-lg p-4 space-y-2">
+                      <p className="text-sm"><span className="font-medium">Account Holder:</span> {bankDetails.accountHolderName || 'Not provided'}</p>
+                      <p className="text-sm"><span className="font-medium">Bank Name:</span> {bankDetails.bankName || 'Not provided'}</p>
+                      <p className="text-sm"><span className="font-medium">Account Number:</span> {bankDetails.accountNumber || 'Not provided'}</p>
+                      <p className="text-sm"><span className="font-medium">IFSC Code:</span> {bankDetails.ifscCode || 'Not provided'}</p>
+                      {bankDetails.upiId && <p className="text-sm"><span className="font-medium">UPI ID:</span> {bankDetails.upiId}</p>}
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <p className="text-yellow-800 text-sm mb-4">Customer hasn't saved bank details. Please enter manually:</p>
+                      
+                      <input
+                        type="text"
+                        placeholder="Account Holder Name *"
+                        value={refundForm.bankDetails.accountHolderName}
+                        onChange={(e) => setRefundForm({...refundForm, bankDetails: {...refundForm.bankDetails, accountHolderName: e.target.value}})}
+                        className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500"
+                      />
+                      
+                      {refundForm.refundMethod === 'Bank Transfer' && (
+                        <>
+                          <input
+                            type="text"
+                            placeholder="Bank Name *"
+                            value={refundForm.bankDetails.bankName}
+                            onChange={(e) => setRefundForm({...refundForm, bankDetails: {...refundForm.bankDetails, bankName: e.target.value}})}
+                            className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Account Number *"
+                            value={refundForm.bankDetails.accountNumber}
+                            onChange={(e) => setRefundForm({...refundForm, bankDetails: {...refundForm.bankDetails, accountNumber: e.target.value}})}
+                            className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500"
+                          />
+                          <input
+                            type="text"
+                            placeholder="IFSC Code *"
+                            value={refundForm.bankDetails.ifscCode}
+                            onChange={(e) => setRefundForm({...refundForm, bankDetails: {...refundForm.bankDetails, ifscCode: e.target.value.toUpperCase()}})}
+                            className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500"
+                          />
+                        </>
+                      )}
+                      
+                      {refundForm.refundMethod === 'UPI' && (
+                        <input
+                          type="text"
+                          placeholder="UPI ID *"
+                          value={refundForm.bankDetails.upiId}
+                          onChange={(e) => setRefundForm({...refundForm, bankDetails: {...refundForm.bankDetails, upiId: e.target.value}})}
+                          className="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-yellow-500/20 focus:border-yellow-500"
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Transaction ID (Optional for COD) */}
+              {selectedOrder.paymentMethod === 'COD' && refundForm.refundMethod && (
+                <div>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
+                    Transaction ID (Optional - Add after transfer)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter transaction/reference ID"
+                    value={refundForm.transactionId}
+                    onChange={(e) => setRefundForm({...refundForm, transactionId: e.target.value})}
+                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
+                  />
+                </div>
+              )}
+
+              {/* Notes */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Notes (Optional)
+                </label>
+                <textarea
+                  placeholder="Add any notes about this refund..."
+                  value={refundForm.notes}
+                  onChange={(e) => setRefundForm({...refundForm, notes: e.target.value})}
+                  rows={3}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
+                />
+              </div>
+
+              {/* Razorpay Auto Refund Info */}
+              {selectedOrder.paymentMethod !== 'COD' && (
+                <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                  <p className="text-sm text-green-800">
+                    <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Refund will be processed automatically via Razorpay. Amount will be credited within 5-7 business days.
+                  </p>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={handleProcessRefund}
+                  disabled={refundProcessing || !refundForm.refundMethod}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  {refundProcessing ? 'Processing...' : 'Initiate Refund'}
+                </button>
+                <button
+                  onClick={() => setShowRefundModal(false)}
+                  disabled={refundProcessing}
+                  className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-medium disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Complete Refund Modal */}
+      {showCompleteRefundModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Complete Refund</h2>
+                <p className="text-sm text-gray-500 mt-1">Order #{selectedOrder.orderNumber}</p>
+                <p className="text-lg font-semibold text-green-600 mt-2">
+                  Refund Amount: ₹{selectedOrder.refundDetails?.amount?.toLocaleString('en-IN')}
+                </p>
+              </div>
+              <button
+                onClick={() => setShowCompleteRefundModal(false)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Refund Details */}
+              <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                <h3 className="font-semibold text-blue-900 mb-3">Refund Details</h3>
+                <div className="space-y-2 text-sm">
+                  <p><span className="font-medium">Method:</span> {selectedOrder.refundDetails?.method}</p>
+                  <p><span className="font-medium">Status:</span> {selectedOrder.refundDetails?.status}</p>
+                  <p><span className="font-medium">Initiated:</span> {new Date(selectedOrder.refundDetails?.refundInitiatedAt).toLocaleString('en-IN')}</p>
+                </div>
+              </div>
+
+              {/* Transaction ID */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Transaction ID <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter bank transfer/UPI transaction ID"
+                  value={completeRefundForm.transactionId}
+                  onChange={(e) => setCompleteRefundForm({...completeRefundForm, transactionId: e.target.value})}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
+
+              {/* Transaction Proof */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Transaction Proof (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="Enter proof URL or reference"
+                  value={completeRefundForm.transactionProof}
+                  onChange={(e) => setCompleteRefundForm({...completeRefundForm, transactionProof: e.target.value})}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Notes (Optional)
+                </label>
+                <textarea
+                  placeholder="Add any notes about this refund completion..."
+                  value={completeRefundForm.notes}
+                  onChange={(e) => setCompleteRefundForm({...completeRefundForm, notes: e.target.value})}
+                  rows={3}
+                  className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                />
+              </div>
+
+              {/* Info Box */}
+              <div className="bg-green-50 rounded-xl p-4 border border-green-200">
+                <p className="text-sm text-green-800">
+                  <svg className="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Customer will be notified via WhatsApp and email once refund is marked as completed.
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={handleCompleteRefund}
+                  disabled={completeRefundProcessing || !completeRefundForm.transactionId}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  {completeRefundProcessing ? 'Completing...' : 'Complete Refund'}
+                </button>
+                <button
+                  onClick={() => setShowCompleteRefundModal(false)}
+                  disabled={completeRefundProcessing}
+                  className="flex-1 px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-medium disabled:opacity-50"
+                >
+                  Cancel
                 </button>
               </div>
             </div>
