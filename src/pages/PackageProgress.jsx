@@ -527,8 +527,8 @@ function PackageProgress() {
 
       {/* Service Card Modal - Apple Design */}
       {showServiceCardModal && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-3">
-          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl max-w-lg w-full" 
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl w-full max-w-[95vw] sm:max-w-lg md:max-w-xl" 
                style={{ 
                  boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
                }}>
@@ -536,7 +536,7 @@ function PackageProgress() {
             {/* Content */}
             <div>
               {/* Header with Icon */}
-              <div className="bg-gradient-to-b from-white to-white/95 backdrop-blur-xl px-6 pt-6 pb-4 border-b border-gray-100 rounded-t-3xl">
+              <div className="bg-gradient-to-b from-white to-white/95 backdrop-blur-xl px-4 sm:px-6 pt-4 sm:pt-6 pb-3 sm:pb-4 border-b border-gray-100 rounded-t-3xl">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center space-x-3">
                     <div className="w-11 h-11 bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 rounded-[18px] flex items-center justify-center shadow-lg shadow-emerald-500/30">
@@ -553,7 +553,7 @@ function PackageProgress() {
               </div>
 
               {/* Content */}
-              <div className="px-6 py-5 space-y-5">
+              <div className="px-4 sm:px-6 py-4 sm:py-5 space-y-4 sm:space-y-5">
                 {/* Client Info Card */}
                 <div className="bg-gradient-to-br from-emerald-50/80 via-teal-50/50 to-emerald-50/80 rounded-[20px] p-4 border border-emerald-100/50 shadow-sm">
                   <div className="grid grid-cols-2 gap-3">
@@ -667,7 +667,7 @@ function PackageProgress() {
               </div>
 
               {/* Action Buttons */}
-              <div className="bg-gradient-to-t from-white via-white to-white/95 backdrop-blur-xl px-6 py-4 border-t border-gray-100 rounded-b-3xl">
+              <div className="bg-gradient-to-t from-white via-white to-white/95 backdrop-blur-xl px-4 sm:px-6 py-3 sm:py-4 border-t border-gray-100 rounded-b-3xl">
                 <div className="flex gap-3">
                   <button
                     onClick={() => {
@@ -709,8 +709,8 @@ function PackageProgress() {
 
       {/* OTP Verification Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] sm:max-w-md p-4 sm:p-6">
             <div className="text-center mb-6">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -764,8 +764,8 @@ function PackageProgress() {
 
       {/* Prescription Upload Modal */}
       {showPrescriptionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] sm:max-w-lg p-4 sm:p-6">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900">Upload Prescription</h3>
               <button
@@ -829,10 +829,10 @@ function PackageProgress() {
 
       {/* Consent Warning Modal */}
       {showConsentWarningModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-[95vw] sm:max-w-md overflow-hidden">
             {/* Header with Warning Icon */}
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-6 py-5">
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 px-4 sm:px-6 py-4 sm:py-5">
               <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
                   <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -846,7 +846,7 @@ function PackageProgress() {
             </div>
 
             {/* Content */}
-            <div className="px-6 py-5">
+            <div className="px-4 sm:px-6 py-4 sm:py-5">
               <p className="text-gray-700 mb-4 leading-relaxed">
                 The patient must complete the consent form on their mobile app before this service can be marked complete.
               </p>
@@ -884,7 +884,7 @@ function PackageProgress() {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <div className="px-4 sm:px-6 py-3 sm:py-4 bg-gray-50 border-t border-gray-200">
               <button
                 onClick={() => setShowConsentWarningModal(false)}
                 className="w-full px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transition-all shadow-md hover:shadow-lg"
