@@ -27,6 +27,9 @@ export default function CreatePackage() {
     videoPublicId: ''
   });
 
+  // Track custom prices for each service
+  const [customPrices, setCustomPrices] = useState({});
+
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [imageUrlInput, setImageUrlInput] = useState('');
@@ -199,7 +202,8 @@ export default function CreatePackage() {
         consultationServices: formData.consultationServices.map(s => s.id),
         price: parseFloat(formData.price),
         image: formData.image,
-        media: formData.video ? [{ url: formData.video, type: 'video', publicId: formData.videoPublicId }] : []
+        media: formData.video ? [{ url: formData.video, type: 'video', publicId: formData.videoPublicId }] : [],
+        customPrices: customPrices  // Include custom prices for services
       };
 
       const response = await packageService.createPackage(packageData);
@@ -282,10 +286,10 @@ export default function CreatePackage() {
               />
               {formData.selectedServices.length > 0 && (
                 <p className="mt-2 text-sm text-gray-500">
-                  Total value of selected services: ₹{formData.selectedServices.reduce((sum, s) => sum + s.price, 0).toLocaleString()}
-                  {formData.price && parseFloat(formData.price) < formData.selectedServices.reduce((sum, s) => sum + s.price, 0) && (
+                  Total value of selected services: ₹{formData.selectedServices.reduce((sum, s) => sum + (customPrices[s.id] || s.price), 0).toLocaleString()}
+                  {formData.price && parseFloat(formData.price) < formData.selectedServices.reduce((sum, s) => sum + (customPrices[s.id] || s.price), 0) && (
                     <span className="ml-2 text-green-600 font-semibold">
-                      (Save ₹{(formData.selectedServices.reduce((sum, s) => sum + s.price, 0) - parseFloat(formData.price)).toLocaleString()})
+                      (Save ₹{(formData.selectedServices.reduce((sum, s) => sum + (customPrices[s.id] || s.price), 0) - parseFloat(formData.price)).toLocaleString()})
                     </span>
                   )}
                 </p>
@@ -404,18 +408,18 @@ export default function CreatePackage() {
           {/* Selected Services */}
           <div className="space-y-3">
             {formData.selectedServices.map((service, index) => (
-              <div key={service.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 rounded-xl bg-zennara-green/10 flex items-center justify-center">
-                    <span className="text-zennara-green font-bold">{index + 1}</span>
+              <div key={service.id} className="p-4 bg-gray-50 rounded-2xl border border-gray-200">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 rounded-xl bg-zennara-green/10 flex items-center justify-center">
+                      <span className="text-zennara-green font-bold">{index + 1}</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-900">{service.name}</p>
+                      <p className="text-sm text-gray-500">{service.category}</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Default: ₹{service.price?.toLocaleString()}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">{service.name}</p>
-                    <p className="text-sm text-gray-500">{service.category}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <span className="text-gray-900 font-bold">₹{service.price?.toLocaleString()}</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -423,11 +427,68 @@ export default function CreatePackage() {
                         ...prev,
                         selectedServices: prev.selectedServices.filter(s => s.id !== service.id)
                       }));
+                      // Remove custom price when service is removed
+                      setCustomPrices(prev => {
+                        const newPrices = { ...prev };
+                        delete newPrices[service.id];
+                        return newPrices;
+                      });
                     }}
                     className="p-2 hover:bg-red-50 rounded-xl transition-colors"
                   >
                     <XIcon className="w-5 h-5 text-red-500" />
                   </button>
+                </div>
+                
+                {/* Custom Price Input */}
+                <div className="flex items-center space-x-3 pl-2">
+                  <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+                    Custom Price:
+                  </label>
+                  <div className="flex-1 flex items-center space-x-2">
+                    <span className="text-gray-500">₹</span>
+                    <input
+                      type="number"
+                      value={customPrices[service.id] || ''}
+                      onChange={(e) => {
+                        const value = e.target.value ? parseFloat(e.target.value) : null;
+                        setCustomPrices(prev => ({
+                          ...prev,
+                          [service.id]: value
+                        }));
+                      }}
+                      placeholder={service.price?.toString()}
+                      className="flex-1 px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-zennara-green focus:border-transparent transition-all"
+                      min="0"
+                      step="100"
+                    />
+                    {customPrices[service.id] && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCustomPrices(prev => {
+                            const newPrices = { ...prev };
+                            delete newPrices[service.id];
+                            return newPrices;
+                          });
+                        }}
+                        className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-xl text-xs font-semibold transition-all"
+                        title="Reset to default price"
+                      >
+                        Reset
+                      </button>
+                    )}
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-gray-900">
+                      ₹{(customPrices[service.id] || service.price)?.toLocaleString()}
+                    </p>
+                    {customPrices[service.id] && customPrices[service.id] !== service.price && (
+                      <p className="text-xs text-blue-600 font-medium">
+                        {customPrices[service.id] < service.price ? 'Discounted' : 'Premium'}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
