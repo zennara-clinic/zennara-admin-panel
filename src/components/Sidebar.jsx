@@ -14,7 +14,8 @@ import {
   ArrowRight,
   Upload,
   ClipboardList,
-  Smartphone
+  Smartphone,
+  MessageCircle
 } from 'lucide-react';
 
 const navigationItems = [
@@ -101,6 +102,11 @@ const navigationItems = [
     submenu: [
       { title: 'Clinic Branches', path: '/locations/branches' },
     ],
+  },
+  {
+    title: 'Chat',
+    icon: MessageCircle,
+    path: '/chat',
   },
   {
     title: 'App Customization',

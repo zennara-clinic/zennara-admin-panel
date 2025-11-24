@@ -64,6 +64,7 @@ import ServiceAnalytics from './pages/analytics/ServiceAnalytics';
 import InventoryAnalytics from './pages/analytics/InventoryAnalytics';
 import Notifications from './pages/Notifications';
 import AppCustomization from './pages/appui/AppCustomization';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -150,6 +151,7 @@ function App() {
                     <Route path="/analytics/summary" element={<ComingSoon />} />
                     <Route path="/locations" element={<Locations />} />
                     <Route path="/locations/branches" element={<Locations />} />
+                    <Route path="/chat" element={<Chat />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/app/customization" element={<AppCustomization />} />
                   </Routes>
