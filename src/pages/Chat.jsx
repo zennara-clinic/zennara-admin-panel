@@ -4,11 +4,7 @@ import BranchSelector from '../components/BranchSelector';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Chat() {
-  const [selectedBranch, setSelectedBranch] = useState(() => {
-    // Load selected branch from localStorage on mount
-    const savedBranch = localStorage.getItem('selectedChatBranch');
-    return savedBranch ? JSON.parse(savedBranch) : null;
-  });
+  const [selectedBranch, setSelectedBranch] = useState(null);
 
   const handleBranchSelect = (branch) => {
     setSelectedBranch(branch);
