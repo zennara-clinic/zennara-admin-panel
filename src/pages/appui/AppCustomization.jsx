@@ -138,7 +138,9 @@ const AppCustomization = () => {
         consultationsScreen: settings.consultationsScreen,
         appointmentsScreen: settings.appointmentsScreen,
         productsScreen: settings.productsScreen,
-        profileScreen: settings.profileScreen
+        profileScreen: settings.profileScreen,
+        termsOfService: settings.termsOfService,
+        privacyPolicy: settings.privacyPolicy
       };
 
       await axios.put(`${API_BASE_URL}/api/app-customization/admin`, updates, {
