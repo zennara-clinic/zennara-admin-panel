@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api, { API_BASE_URL } from '../config/api';
 import { Upload, Edit2, Trash2, Eye, EyeOff, GripVertical, Plus, Link as LinkIcon, ExternalLink, Smartphone, Image as ImageIcon, Video } from 'lucide-react';
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const BannerManagement = () => {
   const [banners, setBanners] = useState([]);
@@ -29,10 +27,7 @@ const BannerManagement = () => {
 
   const fetchBanners = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await axios.get(`${API_URL}/banners`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get('/banners');
       setBanners(response.data.data);
     } catch (error) {
       console.error('Error fetching banners:', error);
@@ -100,7 +95,6 @@ const BannerManagement = () => {
     }
 
     try {
-      const token = localStorage.getItem('adminToken');
       const data = new FormData();
       data.append('title', formData.title);
       data.append('mediaType', formData.mediaType);
@@ -122,17 +116,15 @@ const BannerManagement = () => {
       }
 
       if (editingBanner) {
-        await axios.put(`${API_URL}/banners/${editingBanner._id}`, data, {
+        await api.put(`/banners/${editingBanner._id}`, data, {
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
           }
         });
         alert('Banner updated successfully');
       } else {
-        await axios.post(`${API_URL}/banners`, data, {
+        await api.post('/banners', data, {
           headers: {
-            Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
           }
         });
@@ -167,10 +159,7 @@ const BannerManagement = () => {
     if (!window.confirm('Are you sure you want to delete this banner?')) return;
 
     try {
-      const token = localStorage.getItem('adminToken');
-      await axios.delete(`${API_URL}/banners/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.delete(`/banners/${id}`);
       alert('Banner deleted successfully');
       fetchBanners();
     } catch (error) {
@@ -181,10 +170,7 @@ const BannerManagement = () => {
 
   const handleToggleStatus = async (id) => {
     try {
-      const token = localStorage.getItem('adminToken');
-      await axios.patch(`${API_URL}/banners/${id}/toggle`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await api.patch(`/banners/${id}/toggle`);
       fetchBanners();
     } catch (error) {
       console.error('Error toggling banner status:', error);
@@ -214,16 +200,12 @@ const BannerManagement = () => {
     if (draggedItem === null) return;
 
     try {
-      const token = localStorage.getItem('adminToken');
       const reorderedBanners = banners.map((banner, index) => ({
         id: banner._id,
         order: index
       }));
 
-      await axios.post(`${API_URL}/banners/reorder`, 
-        { banners: reorderedBanners },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post('/banners/reorder', { banners: reorderedBanners });
       
       fetchBanners();
     } catch (error) {
@@ -433,25 +415,65 @@ const BannerManagement = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Banner Image * (16:9 ratio recommended)
+                  Media Type *
+                </label>
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, mediaType: 'image', image: null, videoUrl: '' })}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                      formData.mediaType === 'image'
+                        ? 'border-green-600 bg-green-50 text-green-700'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <ImageIcon size={20} />
+                    <span className="font-medium">Image</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({ ...formData, mediaType: 'video', image: null })}
+                    className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border-2 transition-all ${
+                      formData.mediaType === 'video'
+                        ? 'border-purple-600 bg-purple-50 text-purple-700'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    <Video size={20} />
+                    <span className="font-medium">Video</span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {formData.mediaType === 'video' ? 'Upload Video File (Optional)' : 'Banner Image * (16:9 ratio recommended)'}
                 </label>
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                  {imagePreview ? (
+                  {mediaPreview ? (
                     <div className="space-y-4">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="max-h-48 mx-auto rounded-lg"
-                      />
+                      {formData.mediaType === 'video' ? (
+                        <video
+                          src={mediaPreview}
+                          controls
+                          className="max-h-48 mx-auto rounded-lg"
+                        />
+                      ) : (
+                        <img
+                          src={mediaPreview}
+                          alt="Preview"
+                          className="max-h-48 mx-auto rounded-lg"
+                        />
+                      )}
                       <button
                         type="button"
                         onClick={() => {
-                          setImagePreview(null);
+                          setMediaPreview(null);
                           setFormData({ ...formData, image: null });
                         }}
                         className="text-sm text-red-600 hover:text-red-700"
                       >
-                        Remove Image
+                        Remove {formData.mediaType === 'video' ? 'Video' : 'Image'}
                       </button>
                     </div>
                   ) : (
@@ -459,20 +481,36 @@ const BannerManagement = () => {
                       <Upload size={48} className="mx-auto text-gray-400 mb-4" />
                       <label className="cursor-pointer">
                         <span className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 inline-block">
-                          Choose Image
+                          Choose {formData.mediaType === 'video' ? 'Video' : 'Image'}
                         </span>
                         <input
                           type="file"
-                          accept="image/*"
-                          onChange={handleImageChange}
+                          accept={formData.mediaType === 'video' ? 'video/*' : 'image/*'}
+                          onChange={handleMediaChange}
                           className="hidden"
                         />
                       </label>
-                      <p className="text-xs text-gray-500 mt-2">Max size: 5MB</p>
+                      <p className="text-xs text-gray-500 mt-2">Max size: {formData.mediaType === 'video' ? '50MB' : '5MB'}</p>
                     </div>
                   )}
                 </div>
               </div>
+
+              {formData.mediaType === 'video' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Or Enter Video URL {!formData.image && '*'}
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.videoUrl}
+                    onChange={(e) => setFormData({ ...formData, videoUrl: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="https://example.com/video.mp4 or YouTube/Vimeo URL"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Upload a video file or provide a direct video URL</p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
