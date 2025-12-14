@@ -239,7 +239,7 @@ const BannerManagement = () => {
     { value: 'appointments', label: 'Appointments' },
     { value: 'orders', label: 'Orders' },
     { value: 'profile', label: 'Profile' },
-    { value: 'offers', label: 'Offers' }
+    { value: 'zen-membership', label: 'Zen Membership' }
   ];
 
   if (loading) {

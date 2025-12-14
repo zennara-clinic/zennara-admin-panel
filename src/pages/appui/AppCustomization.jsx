@@ -767,6 +767,59 @@ const HomeScreenSettings = ({ settings, appLogo, onChange, onImageUpload, upload
         </div>
       </div>
 
+      {/* Logo Tagline */}
+      <div className="border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center justify-between mb-3">
+          <label className="block text-sm font-medium text-gray-700">
+            Logo Tagline
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={settings?.showLogoTagline !== false}
+              onChange={(e) => onChange('homeScreen', 'showLogoTagline', e.target.checked)}
+              className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+            />
+            <span className="text-sm text-gray-600">Show Tagline</span>
+          </label>
+        </div>
+        <p className="text-xs text-gray-500 mb-3">
+          Small text lines displayed next to the logo in the header
+        </p>
+        <div className="grid grid-cols-3 gap-3">
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Line 1</label>
+            <input
+              type="text"
+              value={settings?.logoTaglineLine1 || ''}
+              onChange={(e) => onChange('homeScreen', 'logoTaglineLine1', e.target.value)}
+              placeholder="Skin."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Line 2</label>
+            <input
+              type="text"
+              value={settings?.logoTaglineLine2 || ''}
+              onChange={(e) => onChange('homeScreen', 'logoTaglineLine2', e.target.value)}
+              placeholder="Aesthetics."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Line 3</label>
+            <input
+              type="text"
+              value={settings?.logoTaglineLine3 || ''}
+              onChange={(e) => onChange('homeScreen', 'logoTaglineLine3', e.target.value)}
+              placeholder="Wellness."
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Button Texts */}
       <div className="grid grid-cols-2 gap-4">
         <div>
