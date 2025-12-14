@@ -194,7 +194,8 @@ const AppCustomization = () => {
     { id: 'consultations', label: 'Consultations', icon: Calendar },
     { id: 'appointments', label: 'Appointments', icon: Calendar },
     { id: 'products', label: 'Products', icon: ShoppingBag },
-    { id: 'profile', label: 'Profile', icon: User }
+    { id: 'profile', label: 'Profile', icon: User },
+    { id: 'legal', label: 'Legal Content', icon: AlertCircle }
   ];
 
   return (
@@ -313,6 +314,14 @@ const AppCustomization = () => {
         {activeTab === 'profile' && (
           <ProfileScreenSettings
             settings={settings?.profileScreen}
+            onChange={handleInputChange}
+          />
+        )}
+
+        {activeTab === 'legal' && (
+          <LegalContentSettings
+            termsOfService={settings?.termsOfService}
+            privacyPolicy={settings?.privacyPolicy}
             onChange={handleInputChange}
           />
         )}
@@ -1245,6 +1254,64 @@ const ProfileScreenSettings = ({ settings, onChange }) => {
               onChange={(e) => onChange('profileScreen', 'privacyCardText', e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
             />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Legal Content Settings Component
+const LegalContentSettings = ({ termsOfService, privacyPolicy, onChange }) => {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-xl font-semibold text-gray-800 mb-4">Legal Content</h2>
+
+      {/* Terms of Service */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Terms of Service
+        </label>
+        <textarea
+          value={termsOfService || ''}
+          onChange={(e) => onChange('root', 'termsOfService', e.target.value)}
+          rows={15}
+          placeholder="Enter Terms of Service content..."
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-vertical font-mono text-sm"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          This content will be displayed in the Terms of Service screen in the mobile app
+        </p>
+      </div>
+
+      {/* Privacy Policy */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Privacy Policy
+        </label>
+        <textarea
+          value={privacyPolicy || ''}
+          onChange={(e) => onChange('root', 'privacyPolicy', e.target.value)}
+          rows={15}
+          placeholder="Enter Privacy Policy content..."
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-vertical font-mono text-sm"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          This content will be displayed in the Privacy Policy screen in the mobile app
+        </p>
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex gap-2">
+          <AlertCircle size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
+          <div className="text-sm text-blue-800">
+            <p className="font-semibold mb-1">Tips:</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>Use clear and concise language</li>
+              <li>Break content into sections with headings</li>
+              <li>Keep paragraphs short and readable</li>
+              <li>Update these regularly to comply with legal requirements</li>
+            </ul>
           </div>
         </div>
       </div>
