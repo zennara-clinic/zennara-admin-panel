@@ -21,7 +21,9 @@ const AdminChat = ({ selectedBranch }) => {
   const [updateCounter, setUpdateCounter] = useState(0); // For forcing re-renders
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
-  const adminTypingTimeoutRef = useRef(null);
+  const userTypingTimeoutRef = useRef(null); // For tracking user typing indicator timeout
+  const branchJoinTimeoutRef = useRef(null); // For tracking branch join timeout
+  const chatJoinTimeoutRef = useRef(null); // For tracking chat join timeout
   const currentChatIdRef = useRef(null);
   const previousBranchIdRef = useRef(null);
   const selectedChatRef = useRef(null);
@@ -63,6 +65,13 @@ const AdminChat = ({ selectedBranch }) => {
     initSocket();
 
     return () => {
+      // Clean up all timeouts
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      if (userTypingTimeoutRef.current) clearTimeout(userTypingTimeoutRef.current);
+      if (branchJoinTimeoutRef.current) clearTimeout(branchJoinTimeoutRef.current);
+      if (chatJoinTimeoutRef.current) clearTimeout(chatJoinTimeoutRef.current);
+      
+      // Leave rooms
       if (selectedChat) {
         socketService.leaveChat(selectedChat._id);
       }
@@ -89,14 +98,27 @@ const AdminChat = ({ selectedBranch }) => {
         socketService.joinBranch(selectedBranch.id);
       } else {
         console.log('Socket not connected yet, will join branch room later');
+        // Clear existing timeout if any
+        if (branchJoinTimeoutRef.current) {
+          clearTimeout(branchJoinTimeoutRef.current);
+        }
         // Try to join after a short delay
-        setTimeout(() => {
+        branchJoinTimeoutRef.current = setTimeout(() => {
           if (socketService.isConnected()) {
             socketService.joinBranch(selectedBranch.id);
           }
+          branchJoinTimeoutRef.current = null;
         }, 2000);
       }
     }
+    
+    // Cleanup when branch changes or component unmounts
+    return () => {
+      if (branchJoinTimeoutRef.current) {
+        clearTimeout(branchJoinTimeoutRef.current);
+        branchJoinTimeoutRef.current = null;
+      }
+    };
   }, [selectedBranch]);
 
   // Restore selected chat after fetching chats
@@ -112,49 +134,92 @@ const AdminChat = ({ selectedBranch }) => {
 
   // Fetch chat messages when chat is selected
   useEffect(() => {
-    selectedChatRef.current = selectedChat; // Update ref
+    const previousChat = selectedChatRef.current;
     
     if (selectedChat) {
-      // Check if we already have presence info for this chat
-      const presenceInfo = onlineUsers[selectedChat._id];
-      console.log('📋 Selected chat presence info:', presenceInfo);
+      console.log('📋 Selected chat:', selectedChat.name, selectedChat._id);
       
-      // Set initial presence status from onlineUsers map
-      if (presenceInfo) {
-        setUserOnline(presenceInfo.online);
-        setLastSeen(presenceInfo.lastSeen);
-      } else {
-        // Reset if no info available
-        setUserOnline(false);
-        setLastSeen(null);
-      }
-      
-      fetchMessages();
-      
-      // Join chat room only if socket is connected
-      if (socketService.isConnected()) {
-        console.log('Admin joining chat room:', selectedChat._id);
-        socketService.joinChat(selectedChat._id);
-        // Mark as read
-        socketService.markAsRead(selectedChat._id);
-      } else {
-        console.log('Socket not connected, retrying in 1s...');
-        setTimeout(() => {
-          if (socketService.isConnected()) {
-            socketService.joinChat(selectedChat._id);
-            socketService.markAsRead(selectedChat._id);
+      // Only proceed if this is actually a different chat
+      if (!previousChat || previousChat._id !== selectedChat._id) {
+        // Leave previous chat room if exists
+        if (previousChat) {
+          console.log('🚪 Leaving previous chat room:', previousChat._id);
+          socketService.leaveChat(previousChat._id);
+        }
+        
+        // Clear typing indicators and timeouts when switching chats
+        setIsTyping(false);
+        if (userTypingTimeoutRef.current) {
+          clearTimeout(userTypingTimeoutRef.current);
+          userTypingTimeoutRef.current = null;
+        }
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+          typingTimeoutRef.current = null;
+        }
+        
+        // Update ref
+        selectedChatRef.current = selectedChat;
+        
+        // Clear messages when switching chats
+        setMessages([]);
+        
+        // Fetch messages for this chat
+        fetchMessages();
+        
+        // Join chat room only if socket is connected
+        if (socketService.isConnected()) {
+          console.log('Admin joining chat room:', selectedChat._id);
+          socketService.joinChat(selectedChat._id);
+          // Mark as read
+          socketService.markAsRead(selectedChat._id);
+        } else {
+          console.log('Socket not connected, retrying in 1s...');
+          // Clear existing timeout if any
+          if (chatJoinTimeoutRef.current) {
+            clearTimeout(chatJoinTimeoutRef.current);
           }
-        }, 1000);
+          chatJoinTimeoutRef.current = setTimeout(() => {
+            if (socketService.isConnected()) {
+              socketService.joinChat(selectedChat._id);
+              socketService.markAsRead(selectedChat._id);
+            }
+            chatJoinTimeoutRef.current = null;
+          }, 1000);
+        }
       }
     }
-  }, [selectedChat, onlineUsers]);
+    
+    // Cleanup when chat is deselected or component unmounts
+    return () => {
+      if (chatJoinTimeoutRef.current) {
+        clearTimeout(chatJoinTimeoutRef.current);
+        chatJoinTimeoutRef.current = null;
+      }
+      if (userTypingTimeoutRef.current) {
+        clearTimeout(userTypingTimeoutRef.current);
+        userTypingTimeoutRef.current = null;
+      }
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
+    };
+  }, [selectedChat]);
+
+  // Update online status when it changes for the selected chat
+  useEffect(() => {
+    if (selectedChat && onlineUsers[selectedChat._id]) {
+      const presenceInfo = onlineUsers[selectedChat._id];
+      setUserOnline(presenceInfo.online);
+      setLastSeen(presenceInfo.lastSeen);
+    }
+  }, [onlineUsers, selectedChat]);
 
   // Socket event listeners - SET UP ONCE on mount, not recreated on chat change
   useEffect(() => {
     console.log('Setting up socket listeners (ONCE)...');
     console.log('Socket connected status:', socketService.isConnected());
-    
-    let typingTimeout;
 
     socketService.onNewMessage((message) => {
       console.log('✉️ Admin received new message:', message);
@@ -235,10 +300,11 @@ const AdminChat = ({ selectedBranch }) => {
         setIsTyping(true);
         
         // Auto-clear typing indicator after 3 seconds
-        if (typingTimeout) clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
+        if (userTypingTimeoutRef.current) clearTimeout(userTypingTimeoutRef.current);
+        userTypingTimeoutRef.current = setTimeout(() => {
           console.log('⏱️ Auto-clearing typing indicator');
           setIsTyping(false);
+          userTypingTimeoutRef.current = null;
         }, 3000);
       } else {
         console.log('❌ Typing event not for current chat or from admin', {
@@ -255,7 +321,10 @@ const AdminChat = ({ selectedBranch }) => {
       const currentChat = selectedChatRef.current;
       if (currentChat && data.chatId === currentChat._id) {
         console.log('✅ Clearing typing indicator');
-        if (typingTimeout) clearTimeout(typingTimeout);
+        if (userTypingTimeoutRef.current) {
+          clearTimeout(userTypingTimeoutRef.current);
+          userTypingTimeoutRef.current = null;
+        }
         setIsTyping(false);
       }
     });
@@ -299,7 +368,13 @@ const AdminChat = ({ selectedBranch }) => {
 
     return () => {
       console.log('🧹 Cleaning up socket listeners');
-      if (typingTimeout) clearTimeout(typingTimeout);
+      // Clear all timeout refs
+      if (userTypingTimeoutRef.current) clearTimeout(userTypingTimeoutRef.current);
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+      if (branchJoinTimeoutRef.current) clearTimeout(branchJoinTimeoutRef.current);
+      if (chatJoinTimeoutRef.current) clearTimeout(chatJoinTimeoutRef.current);
+      
+      // Remove socket listeners
       socketService.removeAllListeners();
       socketService.getSocket()?.off('userPresenceChanged');
       socketService.getSocket()?.off('messageSent');

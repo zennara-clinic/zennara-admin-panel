@@ -111,7 +111,11 @@ const navigationItems = [
   {
     title: 'App Customization',
     icon: Smartphone,
-    path: '/app/customization',
+    path: '/app',
+    submenu: [
+      { title: 'Customization', path: '/app/customization' },
+      { title: 'Home Banners', path: '/app/banners' },
+    ],
   },
   {
     title: 'Communications',

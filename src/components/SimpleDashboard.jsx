@@ -21,6 +21,175 @@ import {
   ChartBarIcon, CubeIcon, ArrowLeftIcon, TrendUpIcon, TrendDownIcon
 } from './IconComponents';
 
+// Enhanced StatCard Component with Glassmorphism
+function StatCard({ label, value, sublabel, trend, trendUp, icon, iconBg, accentColor }) {
+  const colorMap = {
+    emerald: { 
+      gradient: 'from-emerald-400 to-teal-500',
+      bg: 'from-emerald-50 to-teal-50',
+      shadow: 'shadow-emerald-200',
+      text: 'text-emerald-700',
+      icon: 'from-emerald-500 to-teal-600'
+    },
+    amber: { 
+      gradient: 'from-amber-400 to-orange-500',
+      bg: 'from-amber-50 to-orange-50',
+      shadow: 'shadow-amber-200',
+      text: 'text-amber-700',
+      icon: 'from-amber-500 to-orange-600'
+    },
+    blue: { 
+      gradient: 'from-blue-400 to-indigo-500',
+      bg: 'from-blue-50 to-indigo-50',
+      shadow: 'shadow-blue-200',
+      text: 'text-blue-700',
+      icon: 'from-blue-500 to-indigo-600'
+    },
+    purple: { 
+      gradient: 'from-purple-400 to-pink-500',
+      bg: 'from-purple-50 to-pink-50',
+      shadow: 'shadow-purple-200',
+      text: 'text-purple-700',
+      icon: 'from-purple-500 to-pink-600'
+    }
+  };
+  
+  const colors = colorMap[accentColor] || colorMap.blue;
+  
+  return (
+    <div className="group relative">
+      {/* Gradient background effect */}
+      <div className={`absolute inset-0 bg-gradient-to-r ${colors.gradient} rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition-opacity duration-500`}></div>
+      
+      <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl p-6 border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-1">
+        {/* Decorative gradient orb */}
+        <div className={`absolute -top-6 -right-6 w-24 h-24 bg-gradient-to-br ${colors.gradient} rounded-full blur-3xl opacity-30`}></div>
+        
+        <div className="relative">
+          <div className="flex items-center justify-between mb-6">
+            <div className={`relative w-14 h-14 rounded-2xl bg-gradient-to-br ${colors.icon} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              {/* Icon glow effect */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} rounded-2xl blur-md opacity-50`}></div>
+              <div className="relative text-white">
+                {icon}
+              </div>
+            </div>
+            {trend && (
+              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full font-bold text-xs backdrop-blur-xl ${
+                trendUp 
+                  ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-200' 
+                  : 'bg-red-500/10 text-red-600 border border-red-200'
+              }`}>
+                {trendUp ? (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 17L17 7M17 7H7M17 7V17" />
+                  </svg>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M17 7L7 17M7 17H17M7 17V7" />
+                  </svg>
+                )}
+                {trend}
+              </div>
+            )}
+          </div>
+          
+          <div className="space-y-1">
+            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em]">{label}</p>
+            <p className="text-3xl font-black text-gray-900 tracking-tight">{value}</p>
+            {sublabel && (
+              <p className="text-sm text-gray-500 font-medium mt-2">{sublabel}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Enhanced MetricCard Component
+function MetricCard({ label, value, icon, iconBg }) {
+  const getGradientFromBg = (bg) => {
+    const gradientMap = {
+      'bg-blue-500': 'from-blue-500 to-indigo-600',
+      'bg-emerald-500': 'from-emerald-500 to-teal-600',
+      'bg-purple-500': 'from-purple-500 to-pink-600',
+      'bg-amber-500': 'from-amber-500 to-orange-600',
+      'bg-red-500': 'from-red-500 to-rose-600',
+      'bg-indigo-500': 'from-indigo-500 to-purple-600',
+      'bg-pink-500': 'from-pink-500 to-rose-600',
+      'bg-green-500': 'from-green-500 to-emerald-600',
+      'bg-cyan-500': 'from-cyan-500 to-blue-600'
+    };
+    return gradientMap[iconBg] || 'from-gray-500 to-gray-600';
+  };
+
+  return (
+    <div className="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 overflow-hidden">
+      {/* Animated background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50/50 to-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      
+      <div className="relative">
+        <div className="flex items-center justify-between mb-4">
+          <div className={`relative w-11 h-11 rounded-xl bg-gradient-to-br ${getGradientFromBg(iconBg)} flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+            <div className="text-white">
+              {icon}
+            </div>
+          </div>
+        </div>
+        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-1.5">{label}</p>
+        <p className="text-2xl font-black text-gray-900 tracking-tight">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+// Enhanced SectionHeader Component
+function SectionHeader({ title, color }) {
+  const colorMap = {
+    blue: { 
+      gradient: 'from-blue-500 to-indigo-600',
+      bg: 'from-blue-50/50 to-indigo-50/50',
+      text: 'text-blue-700',
+      border: 'border-blue-200/50'
+    },
+    purple: { 
+      gradient: 'from-purple-500 to-pink-600',
+      bg: 'from-purple-50/50 to-pink-50/50',
+      text: 'text-purple-700',
+      border: 'border-purple-200/50'
+    },
+    emerald: { 
+      gradient: 'from-emerald-500 to-teal-600',
+      bg: 'from-emerald-50/50 to-teal-50/50',
+      text: 'text-emerald-700',
+      border: 'border-emerald-200/50'
+    },
+    amber: { 
+      gradient: 'from-amber-500 to-orange-600',
+      bg: 'from-amber-50/50 to-orange-50/50',
+      text: 'text-amber-700',
+      border: 'border-amber-200/50'
+    }
+  };
+  
+  const colors = colorMap[color] || colorMap.blue;
+  
+  return (
+    <div className="relative mb-8">
+      {/* Decorative line */}
+      <div className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b ${colors.gradient} rounded-full`}></div>
+      
+      <div className="pl-6">
+        <h2 className="text-2xl font-black text-gray-900 tracking-tight">
+          {title}
+        </h2>
+        <div className={`mt-2 h-0.5 w-20 bg-gradient-to-r ${colors.gradient} rounded-full`}></div>
+      </div>
+    </div>
+  );
+}
+
 export default function SimpleDashboard() {
   const [data, setData] = useState({
     totalRevenue: 0,
@@ -134,10 +303,10 @@ export default function SimpleDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg font-semibold">Loading Dashboard...</p>
+          <div className="w-12 h-12 border-3 border-gray-200 border-t-emerald-600 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-500 text-sm font-medium">Loading Dashboard...</p>
         </div>
       </div>
     );
@@ -147,260 +316,275 @@ export default function SimpleDashboard() {
   const completionRate = data.totalAppointments > 0 ? ((data.completedAppointments / data.totalAppointments) * 100).toFixed(1) : 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      {/* Animated background gradients */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute top-40 left-1/2 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+      
+      <div className="relative max-w-[1400px] mx-auto px-8 py-8">
         
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">Dashboard Overview</h1>
-              <p className="text-gray-500">Quick insights into your business performance</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={fetchDashboardData}
-                className="px-4 py-2 bg-white hover:bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 transition-all duration-200 hover:shadow-md"
-              >
-                Refresh
-              </button>
-              <div className="px-4 py-2 bg-white border border-gray-200 rounded-xl">
-                <p className="text-xs text-gray-500">Last Updated</p>
-                <p className="text-sm font-bold text-gray-900">
-                  {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                </p>
-              </div>
+        {/* Enhanced Header */}
+        <div className="flex items-start justify-between mb-12">
+          <div>
+            <h1 className="text-4xl font-black text-gray-900 tracking-tight bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              Dashboard Overview
+            </h1>
+            <p className="text-gray-500 text-sm mt-2 font-medium">Monitor your business metrics in real-time</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={fetchDashboardData}
+              className="group relative inline-flex items-center gap-2 px-5 py-3 bg-white/80 backdrop-blur-sm hover:bg-white border border-gray-200/50 rounded-2xl text-sm font-semibold text-gray-700 transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+            >
+              <svg className="w-4 h-4 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh Data
+            </button>
+            <div className="px-5 py-3 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl shadow-lg">
+              <p className="text-[10px] text-gray-400 uppercase tracking-[0.15em] font-bold">Last Updated</p>
+              <p className="text-sm font-bold text-gray-900 mt-0.5">
+                {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
+              </p>
             </div>
           </div>
         </div>
 
-        {/* Quick Stats Row with Visual Enhancements */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-          <EnhancedStatCard
-            label="Total Revenue"
+        {/* Main Stats Cards with enhanced spacing */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <StatCard
+            label="TOTAL REVENUE"
             value={formatCurrency(data.totalRevenue)}
             trend={`${isPositiveGrowth ? '+' : ''}${data.weeklyGrowth.toFixed(1)}%`}
             trendUp={isPositiveGrowth}
             icon={<DollarIcon />}
-            color="blue"
-            progress={Math.min((data.totalRevenue / 1000000) * 100, 100)}
+            iconBg="bg-emerald-500"
+            accentColor="emerald"
           />
-          <EnhancedStatCard
-            label="Total Patients"
+          <StatCard
+            label="TOTAL PATIENTS"
             value={formatNumber(data.totalPatients)}
             sublabel={`${data.newPatients} new this month`}
             icon={<UsersIcon />}
-            color="purple"
-            progress={(data.newPatients / data.totalPatients) * 100 || 0}
+            iconBg="bg-amber-500"
+            accentColor="amber"
           />
-          <EnhancedStatCard
-            label="Appointments"
+          <StatCard
+            label="APPOINTMENTS"
             value={formatNumber(data.totalAppointments)}
             sublabel={`${completionRate}% completed`}
             icon={<CalendarIcon />}
-            color="emerald"
-            progress={completionRate}
+            iconBg="bg-blue-500"
+            accentColor="blue"
           />
-          <EnhancedStatCard
-            label="Orders"
+          <StatCard
+            label="ORDERS"
             value={formatNumber(data.totalOrders)}
             sublabel={`${data.pendingOrders} pending`}
             icon={<ShoppingIcon />}
-            color="amber"
-            progress={((data.totalOrders - data.pendingOrders) / data.totalOrders) * 100 || 0}
+            iconBg="bg-purple-500"
+            accentColor="purple"
           />
         </div>
 
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Enhanced Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
           {/* Revenue Trend Chart */}
           <div className="lg:col-span-2">
-            <ChartCard title="Revenue Trend" subtitle="Last 7 days performance">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-100 p-8 shadow-xl h-full">
+              <div className="flex items-center justify-between mb-8">
+                <div>
+                  <h3 className="text-xl font-black text-gray-900">Revenue Trend</h3>
+                  <p className="text-sm text-gray-500 mt-1 font-medium">Last 7 days performance</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                  <span className="text-xs font-semibold text-gray-500">LIVE</span>
+                </div>
+              </div>
               <RevenueTrendChart data={data.dailyRevenue} formatCurrency={formatCurrency} />
-            </ChartCard>
+            </div>
           </div>
           
           {/* Payment Methods Donut */}
-          <ChartCard title="Payment Distribution" subtitle="By payment method">
+          <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-100 p-8 shadow-xl">
+            <div className="mb-8">
+              <h3 className="text-xl font-black text-gray-900">Payment Methods</h3>
+              <p className="text-sm text-gray-500 mt-1 font-medium">Distribution by type</p>
+            </div>
             <PaymentDistributionChart data={data.paymentMethods} formatCurrency={formatCurrency} />
-          </ChartCard>
+          </div>
         </div>
 
-        {/* Financial Performance */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold text-gray-600 mb-3 flex items-center gap-2">
-            <span className="w-1 h-5 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></span>
-            Financial Breakdown
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <CompactCard
-              label="Consultations"
+        {/* Financial Breakdown */}
+        <div className="mb-12">
+          <SectionHeader title="Financial Breakdown" color="blue" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <MetricCard
+              label="CONSULTATIONS"
               value={formatCurrency(data.consultationRevenue)}
               icon={<StethoscopeIcon />}
-              color="blue"
+              iconBg="bg-blue-500"
             />
-            <CompactCard
-              label="Products"
+            <MetricCard
+              label="PRODUCTS"
               value={formatCurrency(data.productRevenue)}
               icon={<BoxIcon />}
-              color="emerald"
+              iconBg="bg-emerald-500"
             />
-            <CompactCard
-              label="Packages"
+            <MetricCard
+              label="PACKAGES"
               value={formatCurrency(data.packageRevenue)}
               icon={<PackageIcon />}
-              color="purple"
+              iconBg="bg-purple-500"
             />
-            <CompactCard
-              label="Avg Transaction"
+            <MetricCard
+              label="AVG TRANSACTION"
               value={formatCurrency(data.avgTransaction)}
               icon={<TrendIcon />}
-              color="indigo"
+              iconBg="bg-indigo-500"
             />
           </div>
         </div>
 
-        {/* Appointment Analytics with Chart */}
-        <div className="mb-8">
-          <h2 className="text-sm font-bold text-gray-600 mb-4 flex items-center gap-2">
-            <span className="w-1 h-5 bg-gradient-to-b from-purple-500 to-pink-600 rounded-full"></span>
-            Appointment Analytics
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-4">
-            <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-5 gap-3">
-              <CompactCard
-                label="Total Bookings"
+        {/* Appointment Analytics */}
+        <div className="mb-12">
+          <SectionHeader title="Appointment Analytics" color="purple" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 grid grid-cols-2 md:grid-cols-5 gap-4">
+              <MetricCard
+                label="TOTAL BOOKINGS"
                 value={formatNumber(data.totalAppointments)}
                 icon={<CalendarCheckIcon />}
-                color="purple"
+                iconBg="bg-purple-500"
               />
-              <CompactCard
-                label="Completed"
+              <MetricCard
+                label="COMPLETED"
                 value={formatNumber(data.completedAppointments)}
                 icon={<CheckCircleIcon />}
-                color="emerald"
+                iconBg="bg-emerald-500"
               />
-              <CompactCard
-                label="Pending"
+              <MetricCard
+                label="PENDING"
                 value={formatNumber(data.pendingAppointments)}
                 icon={<ClockIcon />}
-                color="amber"
+                iconBg="bg-amber-500"
               />
-              <CompactCard
-                label="Cancelled"
+              <MetricCard
+                label="CANCELLED"
                 value={formatNumber(data.cancelledAppointments)}
                 icon={<XCircleIcon />}
-                color="red"
+                iconBg="bg-red-500"
               />
-              <CompactCard
-                label="This Week"
+              <MetricCard
+                label="THIS WEEK"
                 value={formatNumber(data.upcomingThisWeek)}
                 icon={<CalendarDaysIcon />}
-                color="blue"
+                iconBg="bg-blue-500"
               />
             </div>
-            <ChartCard title="Status Distribution" subtitle="Appointment breakdown">
+            <div className="bg-white/80 backdrop-blur-sm rounded-3xl border border-gray-100 p-8 shadow-xl">
+              <div className="mb-6">
+                <h3 className="text-xl font-black text-gray-900">Status Distribution</h3>
+                <p className="text-sm text-gray-500 mt-1 font-medium">Appointment breakdown</p>
+              </div>
               <AppointmentPieChart 
                 completed={data.completedAppointments}
                 pending={data.pendingAppointments}
                 cancelled={data.cancelledAppointments}
               />
-            </ChartCard>
+            </div>
           </div>
         </div>
 
-        {/* Patient Metrics */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold text-gray-600 mb-3 flex items-center gap-2">
-            <span className="w-1 h-5 bg-gradient-to-b from-emerald-500 to-teal-600 rounded-full"></span>
-            Patient Analytics
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-            <CompactCard
-              label="Total Patients"
+        {/* Patient Analytics */}
+        <div className="mb-12">
+          <SectionHeader title="Patient Analytics" color="emerald" />
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <MetricCard
+              label="TOTAL PATIENTS"
               value={formatNumber(data.totalPatients)}
               icon={<UserGroupIcon />}
-              color="blue"
+              iconBg="bg-blue-500"
             />
-            <CompactCard
-              label="New Patients"
+            <MetricCard
+              label="NEW PATIENTS"
               value={formatNumber(data.newPatients)}
               icon={<UserPlusIcon />}
-              color="emerald"
+              iconBg="bg-emerald-500"
             />
-            <CompactCard
-              label="Returning"
+            <MetricCard
+              label="RETURNING"
               value={formatNumber(data.returningPatients)}
               icon={<RefreshIcon />}
-              color="purple"
+              iconBg="bg-purple-500"
             />
-            <CompactCard
-              label="Active Members"
+            <MetricCard
+              label="ACTIVE MEMBERS"
               value={formatNumber(data.activeMembers)}
               icon={<BadgeIcon />}
-              color="indigo"
+              iconBg="bg-indigo-500"
             />
-            <CompactCard
-              label="Inactive"
+            <MetricCard
+              label="INACTIVE"
               value={formatNumber(data.inactivePatients)}
               icon={<AlertIcon />}
-              color="amber"
+              iconBg="bg-amber-500"
             />
-            <CompactCard
-              label="Retention"
+            <MetricCard
+              label="RETENTION"
               value={`${data.retentionRate.toFixed(1)}%`}
               icon={<HeartIcon />}
-              color="pink"
+              iconBg="bg-pink-500"
             />
           </div>
         </div>
 
         {/* Order Management */}
-        <div className="mb-6">
-          <h2 className="text-sm font-bold text-gray-600 mb-3 flex items-center gap-2">
-            <span className="w-1 h-5 bg-gradient-to-b from-amber-500 to-orange-600 rounded-full"></span>
-            Order Management
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-            <CompactCard
-              label="Total Orders"
+        <div className="mb-12">
+          <SectionHeader title="Order Management" color="amber" />
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+            <MetricCard
+              label="TOTAL ORDERS"
               value={formatNumber(data.totalOrders)}
               icon={<ShoppingBagIcon />}
-              color="blue"
+              iconBg="bg-blue-500"
             />
-            <CompactCard
-              label="Pending"
+            <MetricCard
+              label="PENDING"
               value={formatNumber(data.pendingOrders)}
               icon={<ClockIcon />}
-              color="amber"
+              iconBg="bg-amber-500"
             />
-            <CompactCard
-              label="Processing"
+            <MetricCard
+              label="PROCESSING"
               value={formatNumber(data.processingOrders)}
               icon={<CogIcon />}
-              color="blue"
+              iconBg="bg-blue-500"
             />
-            <CompactCard
-              label="Shipped"
+            <MetricCard
+              label="SHIPPED"
               value={formatNumber(data.shippedOrders)}
               icon={<TruckIcon />}
-              color="purple"
+              iconBg="bg-purple-500"
             />
-            <CompactCard
-              label="Delivered"
+            <MetricCard
+              label="DELIVERED"
               value={formatNumber(data.deliveredOrders)}
               icon={<CheckCircleIcon />}
-              color="emerald"
+              iconBg="bg-emerald-500"
             />
-            <CompactCard
-              label="Revenue"
+            <MetricCard
+              label="REVENUE"
               value={formatCurrency(data.orderRevenue)}
               icon={<DollarCircleIcon />}
-              color="green"
+              iconBg="bg-green-500"
             />
           </div>
         </div>
-
 
       </div>
     </div>
@@ -551,16 +735,18 @@ function AlertCompactCard({ label, value, needsAttention, icon }) {
   );
 }
 
-// Revenue Trend Chart
+// Enhanced Revenue Trend Chart
 function RevenueTrendChart({ data, formatCurrency }) {
   if (!data || data.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-          <p className="text-sm">No revenue data available</p>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center">
+            <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-gray-500">No revenue data available</p>
         </div>
       </div>
     );
@@ -573,107 +759,175 @@ function RevenueTrendChart({ data, formatCurrency }) {
 
   return (
     <ResponsiveContainer width="100%" height={300}>
-      <AreaChart data={chartData}>
+      <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
         <defs>
-          <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4}/>
-            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+          <linearGradient id="colorRevenueGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#3b82f6" stopOpacity={0.8}/>
+            <stop offset="50%" stopColor="#6366f1" stopOpacity={0.5}/>
+            <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.1}/>
           </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
         <XAxis 
           dataKey="date" 
-          stroke="#9ca3af" 
-          style={{ fontSize: '11px' }}
+          stroke="#94a3b8" 
+          style={{ fontSize: '12px', fontWeight: '500' }}
           tickLine={false}
+          axisLine={{ stroke: '#e2e8f0', strokeWidth: 1 }}
         />
         <YAxis 
-          stroke="#9ca3af" 
-          style={{ fontSize: '11px' }}
+          stroke="#94a3b8" 
+          style={{ fontSize: '12px', fontWeight: '500' }}
           tickLine={false}
           axisLine={false}
+          tickFormatter={(value) => `₹${(value/1000).toFixed(0)}k`}
         />
         <Tooltip 
           contentStyle={{ 
-            backgroundColor: '#1f2937', 
-            border: 'none', 
-            borderRadius: '12px', 
+            backgroundColor: 'rgba(15, 23, 42, 0.95)', 
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(148, 163, 184, 0.2)', 
+            borderRadius: '16px', 
             color: '#fff',
-            boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+            padding: '12px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
           }}
+          labelStyle={{ color: '#94a3b8', fontSize: '12px', marginBottom: '4px' }}
           formatter={(value) => [formatCurrency(value), 'Revenue']}
+          cursor={{ stroke: '#3b82f6', strokeWidth: 1, strokeDasharray: '5 5' }}
         />
         <Area 
           type="monotone" 
           dataKey="revenue" 
-          stroke="#3b82f6" 
+          stroke="url(#colorRevenueGradient)" 
           strokeWidth={3} 
           fillOpacity={1} 
-          fill="url(#colorRevenue)"
-          animationDuration={1500}
+          fill="url(#colorRevenueGradient)"
+          animationDuration={2000}
+          filter="url(#glow)"
         />
       </AreaChart>
     </ResponsiveContainer>
   );
 }
 
-// Payment Distribution Chart
+// Enhanced Payment Distribution Chart
 function PaymentDistributionChart({ data, formatCurrency }) {
   const methods = Object.entries(data || {}).filter(([_, amount]) => amount > 0);
   
   if (methods.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-          </svg>
-          <p className="text-sm">No payment data available</p>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+            <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-gray-500">No payment data available</p>
         </div>
       </div>
     );
   }
 
-  const COLORS = ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
+  const COLORS = [
+    { main: '#3b82f6', gradient: 'from-blue-400 to-blue-600' },
+    { main: '#8b5cf6', gradient: 'from-purple-400 to-purple-600' },
+    { main: '#10b981', gradient: 'from-emerald-400 to-emerald-600' },
+    { main: '#f59e0b', gradient: 'from-amber-400 to-amber-600' },
+    { main: '#ef4444', gradient: 'from-red-400 to-red-600' }
+  ];
+  
   const chartData = methods.map(([name, value], index) => ({ 
     name, 
-    value, 
-    color: COLORS[index % COLORS.length] 
+    value,
+    percentage: ((value / methods.reduce((sum, [_, v]) => sum + v, 0)) * 100).toFixed(1),
+    color: COLORS[index % COLORS.length].main,
+    gradient: COLORS[index % COLORS.length].gradient
   }));
+
+  const CustomLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
+    const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
+
+    if (percent < 0.05) return null;
+
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        className="text-xs font-bold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   return (
     <div className="flex flex-col items-center">
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={240}>
         <PieChart>
+          <defs>
+            {chartData.map((entry, index) => (
+              <linearGradient key={`gradient-${index}`} id={`gradient-${index}`} x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor={entry.color} stopOpacity={0.9}/>
+                <stop offset="100%" stopColor={entry.color} stopOpacity={0.7}/>
+              </linearGradient>
+            ))}
+          </defs>
           <Pie 
             data={chartData} 
             cx="50%" 
             cy="50%" 
-            innerRadius={60} 
-            outerRadius={85} 
-            paddingAngle={3} 
+            innerRadius={65} 
+            outerRadius={95} 
+            paddingAngle={2} 
             dataKey="value"
-            animationDuration={1000}
+            animationDuration={1500}
+            label={CustomLabel}
+            labelLine={false}
           >
             {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+              <Cell 
+                key={`cell-${index}`} 
+                fill={`url(#gradient-${index})`}
+                stroke={entry.color}
+                strokeWidth={1}
+              />
             ))}
           </Pie>
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#1f2937', 
-              border: 'none', 
-              borderRadius: '12px', 
-              color: '#fff' 
+              backgroundColor: 'rgba(15, 23, 42, 0.95)', 
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(148, 163, 184, 0.2)', 
+              borderRadius: '16px', 
+              color: '#fff',
+              padding: '12px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
             }}
             formatter={(value) => formatCurrency(value)}
           />
         </PieChart>
       </ResponsiveContainer>
-      <div className="grid grid-cols-2 gap-2 mt-4 w-full">
+      <div className="grid grid-cols-2 gap-3 mt-6 w-full">
         {chartData.map((entry, index) => (
-          <div key={index} className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: entry.color }}></div>
-            <span className="text-xs text-gray-600 font-medium">{entry.name}</span>
+          <div key={index} className="group flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+            <div className={`w-4 h-4 rounded-lg bg-gradient-to-br ${entry.gradient} shadow-sm group-hover:shadow-md transition-shadow`}></div>
+            <div className="flex-1">
+              <p className="text-xs font-semibold text-gray-700">{entry.name}</p>
+              <p className="text-[10px] text-gray-500">{entry.percentage}% • {formatCurrency(entry.value)}</p>
+            </div>
           </div>
         ))}
       </div>
@@ -681,63 +935,149 @@ function PaymentDistributionChart({ data, formatCurrency }) {
   );
 }
 
-// Appointment Pie Chart
+// Enhanced Appointment Pie Chart
 function AppointmentPieChart({ completed, pending, cancelled }) {
   const chartData = [
-    { name: 'Completed', value: completed, color: '#10b981' },
-    { name: 'Pending', value: pending, color: '#f59e0b' },
-    { name: 'Cancelled', value: cancelled, color: '#ef4444' }
+    { 
+      name: 'Completed', 
+      value: completed, 
+      color: '#10b981',
+      gradient: 'from-emerald-400 to-emerald-600',
+      icon: '✓'
+    },
+    { 
+      name: 'Pending', 
+      value: pending, 
+      color: '#f59e0b',
+      gradient: 'from-amber-400 to-amber-600',
+      icon: '⏱'
+    },
+    { 
+      name: 'Cancelled', 
+      value: cancelled, 
+      color: '#ef4444',
+      gradient: 'from-red-400 to-red-600',
+      icon: '✕'
+    }
   ].filter(item => item.value > 0);
+
+  const total = completed + pending + cancelled;
 
   if (chartData.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400">
+      <div className="flex items-center justify-center h-64">
         <div className="text-center">
-          <svg className="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <p className="text-sm">No appointment data</p>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center">
+            <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p className="text-sm font-medium text-gray-500">No appointment data</p>
         </div>
       </div>
     );
   }
 
+  const RADIAN = Math.PI / 180;
+  const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+    const x = cx + radius * Math.cos(-midAngle * RADIAN);
+    const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+    if (percent < 0.05) return null;
+
+    return (
+      <text 
+        x={x} 
+        y={y} 
+        fill="white" 
+        textAnchor={x > cx ? 'start' : 'end'} 
+        dominantBaseline="central"
+        className="text-sm font-bold"
+      >
+        {`${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height={240}>
         <PieChart>
+          <defs>
+            {chartData.map((entry, index) => (
+              <linearGradient key={`gradient-${index}`} id={`appointment-gradient-${index}`} x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor={entry.color} stopOpacity={1}/>
+                <stop offset="100%" stopColor={entry.color} stopOpacity={0.8}/>
+              </linearGradient>
+            ))}
+            <filter id="appointment-shadow">
+              <feDropShadow dx="0" dy="2" stdDeviation="3" floodOpacity="0.2"/>
+            </filter>
+          </defs>
           <Pie 
             data={chartData} 
             cx="50%" 
             cy="50%" 
-            innerRadius={60} 
-            outerRadius={85} 
-            paddingAngle={3} 
+            innerRadius={65} 
+            outerRadius={95} 
+            paddingAngle={2} 
             dataKey="value"
-            animationDuration={1000}
+            animationDuration={1500}
+            label={renderCustomizedLabel}
+            labelLine={false}
           >
             {chartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
+              <Cell 
+                key={`cell-${index}`} 
+                fill={`url(#appointment-gradient-${index})`}
+                stroke={entry.color}
+                strokeWidth={1}
+                filter="url(#appointment-shadow)"
+              />
             ))}
           </Pie>
           <Tooltip 
             contentStyle={{ 
-              backgroundColor: '#1f2937', 
-              border: 'none', 
-              borderRadius: '12px', 
-              color: '#fff' 
+              backgroundColor: 'rgba(15, 23, 42, 0.95)', 
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(148, 163, 184, 0.2)', 
+              borderRadius: '16px', 
+              color: '#fff',
+              padding: '12px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
             }}
           />
         </PieChart>
       </ResponsiveContainer>
-      <div className="grid grid-cols-3 gap-2 mt-4 w-full">
-        {chartData.map((entry, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="w-3 h-3 rounded-full mb-1" style={{ backgroundColor: entry.color }}></div>
-            <span className="text-xs text-gray-600 font-medium">{entry.name}</span>
-            <span className="text-sm font-bold text-gray-900">{entry.value}</span>
-          </div>
-        ))}
+      
+      {/* Enhanced Legend */}
+      <div className="grid grid-cols-3 gap-4 mt-6 w-full">
+        {chartData.map((entry, index) => {
+          const percentage = ((entry.value / total) * 100).toFixed(1);
+          return (
+            <div key={index} className="group relative bg-white/50 backdrop-blur-sm rounded-xl p-3 border border-gray-100 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-0.5">
+              <div className="flex items-center justify-between mb-2">
+                <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${entry.gradient} flex items-center justify-center text-white text-xs font-bold shadow-md`}>
+                  {entry.icon}
+                </div>
+                <span className="text-lg font-black text-gray-900">{entry.value}</span>
+              </div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">{entry.name}</p>
+              <div className="mt-2 pt-2 border-t border-gray-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-gray-600">{percentage}%</span>
+                  <div className="w-12 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full bg-gradient-to-r ${entry.gradient} rounded-full transition-all duration-1000`}
+                      style={{ width: `${percentage}%` }}
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

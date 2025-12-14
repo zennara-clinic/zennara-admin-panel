@@ -2,8 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
-import MinimalDashboard from './components/Dashboard';
-import SimpleDashboard from './components/SimpleDashboard';
 import Bookings from './pages/Bookings';
 import BookingDetails from './pages/BookingDetails';
 import BookingSlip from './pages/BookingSlip';
@@ -65,6 +63,8 @@ import InventoryAnalytics from './pages/analytics/InventoryAnalytics';
 import Notifications from './pages/Notifications';
 import AppCustomization from './pages/appui/AppCustomization';
 import Chat from './pages/Chat';
+import Reviews from './pages/Reviews';
+import BannerManagement from './components/BannerManagement';
 
 function App() {
   return (
@@ -83,8 +83,8 @@ function App() {
                   <Header />
                   <main className="flex-1 overflow-y-auto">
                     <Routes>
-                    <Route path="/" element={<SimpleDashboard />} />
-                    <Route path="/dashboard/minimal" element={<MinimalDashboard />} />
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/dashboard/minimal" element={<Dashboard />} />
                     <Route path="/dashboard/old" element={<Dashboard />} />
                     <Route path="/bookings" element={<Bookings />} />
                     <Route path="/bookings/pending" element={<PendingConfirmations />} />
@@ -133,7 +133,7 @@ function App() {
                     <Route path="/inventory/edit/:id" element={<EditInventory />} />
                     <Route path="/inventory/vendors" element={<Vendors />} />
                     <Route path="/communications" element={<ComingSoon />} />
-                    <Route path="/reviews" element={<ComingSoon />} />
+                    <Route path="/reviews" element={<Reviews />} />
                     <Route path="/analytics" element={<ComingSoon />} />
                     <Route path="/analytics/financial" element={<FinancialRevenue />} />
                     <Route path="/analytics/patients" element={<PatientCustomerAnalytics />} />
@@ -154,6 +154,7 @@ function App() {
                     <Route path="/chat" element={<Chat />} />
                     <Route path="/notifications" element={<Notifications />} />
                     <Route path="/app/customization" element={<AppCustomization />} />
+                    <Route path="/app/banners" element={<BannerManagement />} />
                   </Routes>
                   </main>
                 </div>

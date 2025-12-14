@@ -49,17 +49,43 @@ const AppCustomization = () => {
   };
 
   const handleInputChange = (screen, field, value) => {
-    setSettings(prev => ({
-      ...prev,
-      [screen]: {
-        ...prev[screen],
-        [field]: value
+    setSettings(prev => {
+      // If screen is 'root', update root-level fields like appLogo
+      if (screen === 'root') {
+        return {
+          ...prev,
+          [field]: value
+        };
       }
-    }));
+      // Otherwise update nested screen properties
+      return {
+        ...prev,
+        [screen]: {
+          ...prev[screen],
+          [field]: value
+        }
+      };
+    });
   };
 
   const handleImageUpload = async (imageType, file) => {
-    if (!file) return;
+    if (!file) {
+      showNotification('Please select a file', 'error');
+      return;
+    }
+
+    // Validate file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      showNotification('Please upload a valid image file (JPEG, PNG, GIF, WebP)', 'error');
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      showNotification('Image size should be less than 10MB', 'error');
+      return;
+    }
 
     const formData = new FormData();
     formData.append('image', file);
@@ -67,6 +93,14 @@ const AppCustomization = () => {
     try {
       setUploading(imageType);
       const token = localStorage.getItem('adminToken');
+      
+      console.log('Uploading image:', {
+        imageType,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type
+      });
+
       const response = await axios.post(
         `${API_BASE_URL}/api/app-customization/admin/upload/${imageType}`,
         formData,
@@ -78,11 +112,16 @@ const AppCustomization = () => {
         }
       );
 
+      console.log('Upload response:', response.data);
       setSettings(response.data.data);
       showNotification('Image uploaded successfully');
+      
+      // Refresh to get latest data
+      await fetchSettings();
     } catch (error) {
       console.error('Error uploading image:', error);
-      showNotification('Failed to upload image', 'error');
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to upload image';
+      showNotification(errorMessage, 'error');
     } finally {
       setUploading(null);
     }
@@ -94,6 +133,7 @@ const AppCustomization = () => {
       const token = localStorage.getItem('adminToken');
       
       const updates = {
+        appLogo: settings.appLogo,
         homeScreen: settings.homeScreen,
         consultationsScreen: settings.consultationsScreen,
         appointmentsScreen: settings.appointmentsScreen,
@@ -232,6 +272,7 @@ const AppCustomization = () => {
         {activeTab === 'home' && (
           <HomeScreenSettings
             settings={settings?.homeScreen}
+            appLogo={settings?.appLogo}
             onChange={handleInputChange}
             onImageUpload={handleImageUpload}
             uploading={uploading}
@@ -607,7 +648,7 @@ const ConsultationCategoryCards = ({ settings, onUpdate }) => {
 };
 
 // Home Screen Component
-const HomeScreenSettings = ({ settings, onChange, onImageUpload, uploading, onUpdate }) => {
+const HomeScreenSettings = ({ settings, appLogo, onChange, onImageUpload, uploading, onUpdate }) => {
   const handleFileSelect = (imageType, event) => {
     const file = event.target.files[0];
     if (file) {
@@ -619,6 +660,64 @@ const HomeScreenSettings = ({ settings, onChange, onImageUpload, uploading, onUp
     <div className="space-y-6">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Home Screen Settings</h2>
 
+      {/* App Logo */}
+      <div className="border border-gray-200 rounded-lg p-4 bg-gradient-to-r from-emerald-50 to-blue-50">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          App Logo
+        </label>
+        <p className="text-xs text-gray-500 mb-3">
+          Upload your clinic logo. This will appear on the app header across all screens.
+        </p>
+        {appLogo ? (
+          <div className="mb-3 p-4 rounded-lg inline-block border border-gray-200" style={{ backgroundColor: '#ebf2e9' }}>
+            <img
+              key={`logo-${settings?.version || Date.now()}`}
+              src={`${appLogo}${appLogo.includes('?') ? '&' : '?'}v=${settings?.version || Date.now()}`}
+              alt="App Logo"
+              className="h-20 max-w-xs object-contain"
+              style={{ backgroundColor: 'transparent' }}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = 'https://res.cloudinary.com/dgcpuirdo/image/upload/v1749817496/zennara_logo_wtk8lz.png';
+              }}
+            />
+          </div>
+        ) : (
+          <div className="mb-3 bg-gray-100 p-4 rounded-lg inline-block border border-gray-200">
+            <div className="h-20 w-40 flex items-center justify-center text-gray-400">
+              <ImageIcon size={32} />
+            </div>
+          </div>
+        )}
+        <div className="flex items-center gap-2">
+          <label className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg cursor-pointer hover:bg-emerald-700 transition-colors">
+            {uploading === 'appLogo' ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+            ) : (
+              <Upload size={18} />
+            )}
+            {uploading === 'appLogo' ? 'Uploading...' : 'Upload Logo'}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleFileSelect('appLogo', e)}
+              disabled={uploading === 'appLogo'}
+            />
+          </label>
+          {appLogo && (
+            <a 
+              href={appLogo} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-xs text-emerald-600 hover:text-emerald-700 underline"
+            >
+              View Full Size
+            </a>
+          )}
+        </div>
+      </div>
+
       {/* Hero Banner */}
       <div className="border border-gray-200 rounded-lg p-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -626,7 +725,8 @@ const HomeScreenSettings = ({ settings, onChange, onImageUpload, uploading, onUp
         </label>
         {settings?.heroBannerImage && (
           <img
-            src={settings.heroBannerImage}
+            key={`hero-${settings?.version || Date.now()}`}
+            src={`${settings.heroBannerImage}${settings.heroBannerImage.includes('?') ? '&' : '?'}v=${settings?.version || Date.now()}`}
             alt="Hero Banner"
             className="w-full h-48 object-cover rounded-lg mb-3"
           />
