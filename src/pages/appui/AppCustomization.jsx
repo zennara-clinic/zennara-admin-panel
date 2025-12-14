@@ -721,7 +721,7 @@ const HomeScreenSettings = ({ settings, appLogo, onChange, onImageUpload, upload
       {/* Hero Banner */}
       <div className="border border-gray-200 rounded-lg p-4">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Hero Banner Image
+          Default Banner Settings
         </label>
         {settings?.heroBannerImage && (
           <img
